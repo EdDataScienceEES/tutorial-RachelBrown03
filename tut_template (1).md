@@ -10,12 +10,15 @@ To add images, replace `tutheaderbl1.png` with the file name of any image you up
 
 #### <a href="#section3"> 3. The third section</a>
 
-This tutorial will guide you through the process of analyzing and visualizing population trends using the Living Planet Index (LPI) dataset, specifically focusing on a single species (House Sparrow). It covers data manipulation, statistical modeling (including mixed models), and visualization techniques to help you understand population dynamics over time. 
+# Analyzing Population Trends in Biodiversity Using the LPI Dataset
+ 
+This tutorial will guide you through the process of analyzing and visualizing population trends using the **Living Planet Index (LPI)** dataset, specifically focusing on a single species, **House Sparrow**. It covers data manipulation, statistical modeling (including mixed models), and visualization techniques to help you understand population dynamics over time. By the end, you'll have gained hands-on experience with exploratory data analysis, fitting and interpreting mixed-effects models, and visualizing results, equipping you to study other species' trends using similar methods.
 
 # Steps:
 
 1. [**Introduction**](#intro)
     - [Prerequisites](#Prerequisites)
+    - [Data and Materials](#DataMat)
     - [Overview of the Living Planet Index (LPI) dataset](#Overview)
     - [Importance of analyzing population trends in ecology](#Importance)
 2. [**Part I: Data Preparations**](#Preparations)
@@ -39,7 +42,7 @@ This tutorial will guide you through the process of analyzing and visualizing po
 # 1. Introduction
 {: #intro}
 
-The **Living Planet Index (LPI)** tracks the population trends of species around the world. By analyzing these trends, we can better understand biodiversity changes and potential threats to species survival.
+The **Living Planet Index (LPI)** is a global dataset that tracks the population trends of species worldwide. By analyzing these trends, scientists and conservationists can identify which species or regions face the most significant threats, helping to prioritize conservation efforts. Population trends are central in biodiversity studies as they provide insights into ecosystem health, reveal potential environmental stressors, and inform policy-making on biodiversity conservation.
 
 ## Prerequisites
 {: #Prerequisites}
@@ -72,6 +75,17 @@ Having these skills will help you fully engage with the content and follow along
 You can find all the data that you require for completing this tutorial on this [GitHub repository](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/tree/master). We encourage you to download the data to your computer and work through the examples along the tutorial as this reinforces your understanding of the concepts taught in the tutorial.
 
 Now we are ready to dive into the investigation!
+
+## Overview of the Living Planet Index (LPI) Dataset
+{: #Overview}
+The **Living Planet Index (LPI)** dataset provides population trends for thousands of vertebrate species worldwide, recorded from 1970 onwards. Each row in the dataset represents a specific population for a given species, recorded at a location, and includes information such as the species' name, location, sampling method, and population abundance across multiple years.
+
+The LPI data are valuable in ecological studies, as they allow for tracking changes in biodiversity. With statistical modeling, we can quantify these changes and investigate factors that may influence population trends, such as location, sampling methodology, and year.
+
+## Importance of Analyzing Population Trends in Ecology
+{: #Importance}
+
+Understanding population trends is crucial for conservation and biodiversity management. Population data help identify species in decline, suggest possible causes, and guide interventions to support ecosystem health. Analyzing population trends over time offers insights into broader ecological changes, potential threats like habitat loss or climate change, and the effectiveness of conservation efforts. Through this tutorial, you'll learn how to leverage data analysis and visualization techniques to detect these trends and gain insights into ecological dynamics.
 
 ----
 # Data Preparations
@@ -150,7 +164,7 @@ We can save the figure and give it exact dimensions using `ggsave` from the `ggp
 ```r
 ggsave("figures/data_histogram.png", plot = sparrow_hist, width = 10, height = 5)
 ```
-![alt text](https://github.com/EdDataScienceEES/challenge-3-RachelBrown03/blob/master/figures/data_histogram.png)
+![alt text](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/figures/data_histogram.png)
 
 We can see that our data are very right-skewed (i.e. most of the values are relatively small), indicating that most recorded populations are relatively small, with fewer locations reporting very high population counts. This distribution justifies the use of a GLMM with a Poisson distribution to model count data.
 
@@ -169,7 +183,7 @@ Next, to further explore temporal trends in the population of House sparrows, we
 # Save the plot
 ggsave("figures/population_scatter.png", plot = sparrow_scatter, width = 10, height = 5)
 ```
-![alt text](https://github.com/EdDataScienceEES/challenge-3-RachelBrown03/blob/master/figures/population_scatter.png)
+![alt text](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/figures/population_scatter.png)
 
 Each point represents a population measurement for a given location and year, color-coded by country. The plot shows possible declining trends, motivating a model that includes time and regional effects.
 
@@ -188,7 +202,7 @@ Another factor worth considering is sampling method, different methods of collec
 # Save the plot
 ggsave("figures/sampling_method_boxplot.png", plot = sampling_boxplot, width = 10, height = 5)
 ```
-![alt text](https://github.com/EdDataScienceEES/challenge-3-RachelBrown03/blob/master/figures/sampling_method_boxplot.png)
+![alt text](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/figures/sampling_method_boxplot.png)
 
 The plot shows that there is a clear variation in population estimates due to different sampling methodologies, supporting the decision to include Sampling Method as a random effect in the model to control for these differences. `Weekly Counts` appears to have a massively inflated count comapred to other methods.
 
