@@ -10,6 +10,259 @@ To add images, replace `tutheaderbl1.png` with the file name of any image you up
 
 #### <a href="#section3"> 3. The third section</a>
 
+This tutorial will guide you through the process of analyzing and visualizing population trends using the Living Planet Index (LPI) dataset, specifically focusing on a single species (House Sparrow). It covers data manipulation, statistical modeling (including mixed models), and visualization techniques to help you understand population dynamics over time. 
+
+# Steps:
+
+1. [**Introduction**](#intro)
+  - [Prerequisites](#Prerequisites)
+  - [Overview of the Living Planet Index (LPI) dataset](#Overview)
+  - [Importance of analyzing population trends in ecology](#Importance)
+2. [**Part I: Data Preparations**](#Preparations)
+  - [Loading the data](#load)
+  - [Reshaping and cleaning data for analysis](#cleaning)
+  - [Filtering data for House Sparrows](#filter)
+3. [**Exploratory Data Analysis (EDA)**](#EDA)
+  - [Visualizing population distributions using histograms](#Histogram)
+  - [Plotting population trends over time](#Trends)
+  - [Investigating population trends by sampling method](#SampleMeth)
+4. [**Part III: Statistical Analysis**](#statistical analysis)
+  - [Fitting a mixed-effects model to examine population trends over time](#GLMM)
+  - [Model diagnostics: Checking residuals for model assumptions](#Diagnostics)
+5. [**Part IIII: Model Interpretation and Predictions**](#interpretation)
+  - [Visualizing model predictions and confidence intervals](#visualise)
+  - [Understanding predictions by country and residuals over time](#predictions)
+6. [**Summary**](#Summary)
+7. [**Challenge**](#Challenge)
+
+----
+# 1. Introduction
+{: #intro}
+
+The **Living Planet Index (LPI)** tracks the population trends of species around the world. By analyzing these trends, we can better understand biodiversity changes and potential threats to species survival.
+
+## Prerequisites
+{: #Prerequisites}
+
+This tutorial is suitable for learners with a basic to intermediate understanding of data analysis and statistical modeling. If you are a beginner, you'll gain an understanding of key concepts such as data reshaping, data visualization, and basic statistical models. Intermediate learners will be able to extend these concepts by applying mixed-effects models, model diagnostics, and interpretation of results.
+
+To get the most out of this tutorial, you should have a basic understanding of the following:
+
+- **Descriptive statistics:** A fundamental understanding of measures like mean, median, variance, and how to interpret distributions.
+- **Linear models:** Knowledge of how to work with simple regression models (e.g., lm() function in R) and understanding of fixed vs. random effects in modeling.
+- **Algebra:** Basic algebraic concepts (e.g., manipulating equations and understanding functions) will help you grasp the underlying statistical models.
+
+Throughout the tutorial, we will be using `R`. While the statistical concepts can be applied across different languages, familiarity with R will enhance your experience. Specifically, you should be comfortable with:
+
+- **Data manipulation with `dplyr`:** Transforming, cleaning, and filtering data.
+- **Data reshaping with `tidyr`:** Pivoting data into long format and handling missing values.
+- **Data visualization with `ggplot2`:** Creating plots to explore and communicate data patterns.
+  
+If you are new to any of these tools or want to refresh your skills, we recommend reviewing the following tutorials on the Coding Club website:
+
+- [Intro to R](https://ourcodingclub.github.io/tutorials/intro-to-r/)   
+- [Basic Data Manipulation](https://ourcodingclub.github.io/tutorials/data-manip-intro/)
+- [Data Visualization](https://ourcodingclub.github.io/tutorials/datavis/)
+
+Having these skills will help you fully engage with the content and follow along with the hands-on coding examples.
+
+## Data and Materials
+{: #DataMat}
+
+You can find all the data that you require for completing this tutorial on this [GitHub repository](https://github.com/ourcodingclub/CC-data-scaling). We encourage you to download the data to your computer and work through the examples along the tutorial as this reinforces your understanding of the concepts taught in the tutorial.
+
+
+
+Now we are ready to dive into the investigation!
+
+----
+# Data Preparations
+To start off, open `RStudio`,  and create a new script by clicking on `File/ New File/ R Script`, and start writing your script with the help of this tutorial.
+```r
+# Purpose of the script
+# Your name, date and email
+
+# Your working directory, set to the folder you just downloaded from Github, e.g.:
+setwd("~/Downloads/CC-Analyzing-Pop-Trends")
+
+# Libraries - if you haven't installed them before, run the code install.packages("package_name")
+library(tidyverse)  # Data manipulation and visualization
+library(lme4)       # Mixed models
+library(broom)      # Tidying model outputs
+library(ggplot2)    # Visualization
+library(DHARMa)     # Residual diagnostics for mixed models
+library(ggeffects)  # Model predictions
+library(stargazer)  # Model summary formatting
+```
+
+We will use data from the [Living Planet Index](https://www.livingplanetindex.org/), which you have already downloaded from the [Github repository](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/edit/master/tut_template%20(1).md) (Click on `Clone or Download/Download ZIP` and then unzip the files).
+
+```r
+# Import data from the Living Planet Index - population trends of species from 1970 to 2014
+LPI <- read.csv("LPI_data.csv")
+```
+The data are in wide format - the different years are column names, when really they should be rows in the same column, so we will use `pivot_longer()` to change the data into long format. Also note, there is an ‘X’ in front of all the years because when we imported the data, all column names became characters. (The X is R’s way of turning numbers into characters.) Now that the years are rows, not columns, we need them to be proper numbers, so we will transform them using `parse_number()` from the `readr` package. We then remove NA or infinite values to make the dta easier to work with for modelling and visualisation.
+
+```r
+# Reshape data into long format for easier analysis
+LPI_long <- data %>%
+  pivot_longer(cols = 25:69, names_to = "Year", values_to = "Population") %>%
+  mutate(
+    Year = parse_number(Year),  # Convert year to numeric
+    genus_species = paste(Genus, Species, sep = "_"),
+    genus_species_id = paste(Genus, Species, id, sep = "_")
+  ) %>%
+  filter(is.finite(Population), !is.na(Population))  # Remove NA or infinite values
+```
+
+Now, we must filter out just the records for just the species we are interested in, in this case House sparrows. We can do this by fitering for where `Common.Name` is House sparrow. and we then round the population to the nearest integer as it is count data so half a sparrow is not much use to us!
+
+```r
+# Filter data for House Sparrows
+house_sparrow_data <- LPI_long %>%
+  filter(Common.Name == "House sparrow")
+
+house_sparrow_data$Population <- round(house_sparrow_data$Population)  # Round population numbers for analysis
+```
+
+----
+# Exploratory Data Analysis (EDA)
+
+Before diving into statistical modeling, it’s crucial to explore the data visually to understand patterns and distributions. We will use `ggplot2` library for most of our visualizations.
+
+## Visualizing the Population Distribution with a Histogram
+
+Let’s look at the distribution of the data to get some idea of what the data look like and what model we could use to answer our research question. Remember, if you put the whole code in the brackets it will display in the plot viewer right away!
+
+```r
+# Histogram of House Sparrow population data
+(sparrow_hist <- ggplot(house_sparrow_data, aes(Population)) + 
+   geom_histogram(binwidth = 500, fill = "#69b3a2", alpha = 0.7) +  
+   labs(title = "Distribution of House Sparrow Population", 
+        x = "Population Abundance", 
+        y = "Frequency") + 
+   theme_bw())
+```
+We can save the figure and give it exact dimensions using `ggsave` from the `ggplot2` package. The file will be saved to wherever your working directory is, which you can check by running `getwd()` in the console.
+
+```r
+ggsave("figures/data_histogram.png", plot = sparrow_hist, width = 10, height = 5)
+```
+![alt text](https://github.com/EdDataScienceEES/challenge-3-RachelBrown03/blob/master/figures/data_histogram.png)
+
+We can see that our data are very right-skewed (i.e. most of the values are relatively small), indicating that most recorded populations are relatively small, with fewer locations reporting very high population counts. This distribution justifies the use of a GLMM with a Poisson distribution to model count data.
+
+## Plotting Population Trends Over Time
+Next, to further explore temporal trends in the population of House sparrows, we can generate a scatter plot of house sparrow population abundance over time, with data points color-coded by country). This plot provides an initial visual indication of any observable trends in population over time and any regional differences.
+
+```r
+# Scatter plot of population over time
+(sparrow_scatter <- ggplot(data = house_sparrow_data) +
+    geom_point(aes(x = Year, y = Population, colour = Country.list), alpha = 0.9) +
+    labs(x = 'Year', y = 'Population Abundance', title = 'Population Trends of House Sparrow') +
+    theme_bw())
+
+# Save the plot
+ggsave("figures/population_scatter.png", plot = sparrow_scatter, width = 10, height = 5)
+```
+![alt text](https://github.com/EdDataScienceEES/challenge-3-RachelBrown03/blob/master/figures/population_scatter.png)
+
+Each point represents a population measurement for a given location and year, color-coded by country. The plot shows possible declining trends, motivating a model that includes time and regional effects.
+
+## Investigating Population by Sampling Method
+Another factor worth considering is sampling method, different methods of collecting data will likely lead to different counts. To examine potential methodological effects, we can plot population counts by sampling method using a boxplot. Differences in counts across sampling methods might indicate that methodological choices impact population estimates, and mean that this is worth including as a random effect in our model.
+
+```r
+# Boxplot of population counts by sampling method
+(sampling_boxplot <- ggplot(house_sparrow_data, aes(x = Sampling.method, y = Population)) +
+    geom_boxplot(fill = '#69b3a2') +
+    labs(x = 'Sampling Method', y = 'Population Count', title = 'Population Count by Sampling Method') +
+    theme_minimal())
+
+# Save the plot
+ggsave("figures/sampling_method_boxplot.png", plot = sampling_boxplot, width = 10, height = 5)
+```
+![alt text](https://github.com/EdDataScienceEES/challenge-3-RachelBrown03/blob/master/figures/sampling_method_boxplot.png)
+
+The plot shows that there is a clear variation in population estimates due to different sampling methodologies, supporting the decision to include Sampling Method as a random effect in the model to control for these differences. `Weekly Counts` appears to have a massively inflated count comapred to other methods.
+
+----
+# Statistical Analysis
+
+To model the population trends over time, we’ll use a mixed-effects model because the data has hierarchical structure (e.g., multiple records from the same country or location). This allows us to account for both fixed effects (Year) and random effects (Sampling Method, Country).
+
+## Fitting a Mixed-Effects Model
+
+```r
+# Scale Year for Model Stability
+house_sparrow_data$Year_scaled <- house_sparrow_data$Year - min(house_sparrow_data$Year)
+
+# Fit a mixed-effects model with Year as a fixed effect and random intercepts for Sampling Method and Country
+sparrow.model <- glmer(Population ~ Year_scaled + (1|Sampling.method) + (1 | Country.list/Location.of.population) + (1|genus_species_id), 
+                       data = house_sparrow_data, 
+                       family = "poisson")
+
+# Summarize the model
+summary(sparrow.model)
+```
+
+## Model Diagnostics: Checking Residuals
+```r
+# Generate QQ plot for residuals to check for normality
+qqnorm(resid(sparrow.model))
+qqline(resid(sparrow.model))
+
+# Simulated residuals to check model assumptions
+sim_res <- simulateResiduals(sparrow.model)
+plot(sim_res)  # Displays QQ plots and additional diagnostics
+```
+
+----
+# Model Interpretation and Predictions
+
+Once we’ve fit the model, we can make predictions and visualize them.
+
+## Visualizing Model Predictions with Confidence Intervals
+```r
+# Model predictions over time
+pred.mm <- ggpredict(sparrow.model, terms = c("Year_scaled"))
+
+# Plot overall predictions with confidence intervals
+(reg_line_plot <- ggplot(pred.mm) + 
+  geom_line(aes(x = x, y = predicted)) +
+  geom_ribbon(aes(x = x, ymin = predicted - std.error, ymax = predicted + std.error), fill = "lightgrey", alpha = 0.5) +
+  geom_point(data = house_sparrow_data, aes(x = Year_scaled, y = Population, colour = Country.list)) +
+  labs(x = "Year (scaled)", y = "Population Count", title = "House Sparrow Population Trends"))
+ggsave("figures/Overall_House_Sparrow_Population_Trends.png", plot = reg_line_plot, width = 8, height = 6)
+```
+
+## Predictions by Country
+```r
+# Predictions by Country with individual trends
+pred.mm1 <- ggpredict(sparrow.model, terms = c("Year_scaled", "Country.list"), type = "re")
+
+# Plot predictions by country
+(reg_by_country <- ggplot(pred.mm1) + 
+  geom_line(aes(x = x, y = predicted)) +
+  geom_ribbon(aes(x = x, ymin = predicted - std.error, ymax = predicted + std.error), fill = "lightgrey", alpha = 0.5) +
+  geom_point(data = house_sparrow_data, aes(x = Year_scaled, y = Population, colour = Country.list)) +
+  labs(x = "Year (scaled)", y = "Population Count", title = "House Sparrow Population Trends by Country"))
+ggsave("figures/House_Sparrow_Population_Trends_by_Country.png", plot = reg_by_country, width = 8, height = 6)
+```
+
+---
+# Conclusion
+In this tutorial, we have:
+
+- Reshaped and cleaned the LPI dataset to focus on the House Sparrow population.
+- Conducted exploratory data analysis with visualizations.
+- Fitted a mixed-effects model to analyze population trends over time.
+- Generated predictions and visualizations to interpret the results.
+
+This workflow demonstrates a typical approach in ecological data science, allowing us to analyze trends and understand the factors influencing species population dynamics.
+
+---
+
 You can read this text, then delete it and replace it with your text about your tutorial: what are the aims, what code do you need to achieve them?
 ---------------------------
 We are using `<a href="#section_number">text</a>` to create anchors within our text. For example, when you click on section one, the page will automatically go to where you have put `<a name="section_number"></a>`.
