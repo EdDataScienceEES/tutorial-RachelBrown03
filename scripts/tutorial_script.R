@@ -149,6 +149,10 @@ par(mfrow = c(2, 2))  # Set up a 2x2 plot grid
 sim_res <- simulateResiduals(sparrow.model)
 plot(sim_res)  # Displays QQ plots and additional diagnostics
 
+# Save DHARMa diagnostic plots to a file
+png("figures/DHARMa_diagnostic_plots.png", width = 800, height = 600)
+plot(sim_res)  # Generates QQ plot, residuals, outlier, and autocorrelation checks
+dev.off()  # Closes the device and saves the file
 
 # Model Predictions ----
 
