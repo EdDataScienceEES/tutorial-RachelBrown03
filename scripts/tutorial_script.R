@@ -132,7 +132,9 @@ dev.off()
 
 
 par(mfrow = c(2, 2))  # Set up a 2x2 plot grid
-plot(sparrow.model, ylim = c(-20, 20), xlim = c(0, 100))  # Diagnostic plots for model fit
+(diag_plot <- plot(sparrow.model, ylim = c(-20, 20), xlim = c(0, 100)) )# Diagnostic plots for model fit
+
+ggsave("figures/diag_plot.png", plot = diag_plot, width = 8, height = 5)
 
 # Simulated residuals to check model assumptions
 sim_res <- simulateResiduals(sparrow.model)
