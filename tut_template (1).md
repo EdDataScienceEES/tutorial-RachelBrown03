@@ -276,6 +276,8 @@ Exponentiating the coefficient of -0.066 gives us approximately 0.9361, which co
 ------
 
 ## Model Diagnostics: Checking Residuals
+To ensure the validity of our model, we’ll examine residuals to verify that model assumptions are met. Specifically, we’ll check for normality and homoscedasticity of the residuals.
+
 ```r
 # Generate QQ plot for residuals to check for normality
 qqnorm(resid(sparrow.model))
@@ -285,13 +287,17 @@ qqline(resid(sparrow.model))
 sim_res <- simulateResiduals(sparrow.model)
 plot(sim_res)  # Displays QQ plots and additional diagnostics
 ```
+The QQ plot and simulated residuals plot provide visual checks for any deviations from model assumptions. If the points on the QQ plot deviate substantially from the reference line, it may indicate non-normality of residuals. Simulated residuals provide a comprehensive diagnostic, highlighting any issues related to distributional assumptions or patterns that may need further examination or model adjustment.
 
 ----
 # Model Interpretation and Predictions
 
-Once we’ve fit the model, we can make predictions and visualize them.
+With the mixed-effects model fitted, we can proceed to interpret the results and visualize population trends over time. We will also generate predictions to observe how house sparrow populations are projected to change, both overall and by country.
 
 ## Visualizing Model Predictions with Confidence Intervals
+
+First, we create a visualization of the overall predicted trend over time, including a confidence interval to represent the uncertainty around our predictions.
+
 ```r
 # Model predictions over time
 pred.mm <- ggpredict(sparrow.model, terms = c("Year_scaled"))
@@ -302,10 +308,16 @@ pred.mm <- ggpredict(sparrow.model, terms = c("Year_scaled"))
   geom_ribbon(aes(x = x, ymin = predicted - std.error, ymax = predicted + std.error), fill = "lightgrey", alpha = 0.5) +
   geom_point(data = house_sparrow_data, aes(x = Year_scaled, y = Population, colour = Country.list)) +
   labs(x = "Year (scaled)", y = "Population Count", title = "House Sparrow Population Trends"))
+
+# Save the plot
 ggsave("figures/Overall_House_Sparrow_Population_Trends.png", plot = reg_line_plot, width = 8, height = 6)
 ```
+This plot demonstrates the population trend over time for house sparrows, with the ribbon capturing the confidence interval. The negative trend indicates a decline in population, aligning with the model’s findings.
 
 ## Predictions by Country
+
+To further understand regional differences, we can generate and visualize predictions by country. This allows us to see if trends differ across various geographic regions, possibly due to differing environmental pressures or conservation policies.
+
 ```r
 # Predictions by Country with individual trends
 pred.mm1 <- ggpredict(sparrow.model, terms = c("Year_scaled", "Country.list"), type = "re")
@@ -318,17 +330,23 @@ pred.mm1 <- ggpredict(sparrow.model, terms = c("Year_scaled", "Country.list"), t
   labs(x = "Year (scaled)", y = "Population Count", title = "House Sparrow Population Trends by Country"))
 ggsave("figures/House_Sparrow_Population_Trends_by_Country.png", plot = reg_by_country, width = 8, height = 6)
 ```
+This plot provides a more granular view of trends within each country, offering insights into regional differences in population dynamics. Countries with steeper declines might indicate areas where targeted conservation efforts could be beneficial.
+
 
 ---
 # Conclusion
-In this tutorial, we have:
+In this tutorial, we:
 
-- Reshaped and cleaned the LPI dataset to focus on the House Sparrow population.
-- Conducted exploratory data analysis with visualizations.
-- Fitted a mixed-effects model to analyze population trends over time.
-- Generated predictions and visualizations to interpret the results.
+- **Reshaped and cleaned the LPI dataset** to focus specifically on house sparrow populations.
+- **Conducted exploratory data analysis** to visualize the data and understand initial trends and patterns.
+- **Fitted a mixed-effects model** to assess the temporal and spatial variation in house sparrow populations, incorporating both fixed and random effects to capture hierarchical structure and account for sampling differences.
+- **Generated model diagnostics** to check assumptions and ensure model reliability.
+- **Produced visualizations of model predictions** to interpret the results and understand population trends, both overall and by country.
 
 This workflow demonstrates a typical approach in ecological data science, allowing us to analyze trends and understand the factors influencing species population dynamics.
+
+## Key Findings
+The analysis indicates a statistically significant overall decline in house sparrow populations over time, with an estimated annual decrease of approximately 6.39%. This suggests that factors affecting population viability—such as habitat loss or climate change—may be contributing to a sustained decline. Additionally, differences observed across countries highlight regional variability, pointing to the importance of tailored conservation strategies.
 
 ---
 
