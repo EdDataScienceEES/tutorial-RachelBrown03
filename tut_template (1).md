@@ -69,9 +69,7 @@ Having these skills will help you fully engage with the content and follow along
 ## Data and Materials
 {: #DataMat}
 
-You can find all the data that you require for completing this tutorial on this [GitHub repository](https://github.com/ourcodingclub/CC-data-scaling). We encourage you to download the data to your computer and work through the examples along the tutorial as this reinforces your understanding of the concepts taught in the tutorial.
-
-
+You can find all the data that you require for completing this tutorial on this [GitHub repository](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/tree/master). We encourage you to download the data to your computer and work through the examples along the tutorial as this reinforces your understanding of the concepts taught in the tutorial.
 
 Now we are ready to dive into the investigation!
 
@@ -97,7 +95,7 @@ library(ggeffects)  # Model predictions
 library(stargazer)  # Model summary formatting
 ```
 
-We will use data from the [Living Planet Index](https://www.livingplanetindex.org/), which you have already downloaded from the [Github repository](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/edit/master/tut_template%20(1).md) (Click on `Clone or Download/Download ZIP` and then unzip the files).
+We will use data from the [Living Planet Index](https://www.livingplanetindex.org/), which you have already downloaded from the [Github repository](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/tree/master/data) (Click on `Clone or Download/Download ZIP` and then unzip the files).
 
 ```r
 # Import data from the Living Planet Index - population trends of species from 1970 to 2014
