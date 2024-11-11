@@ -15,23 +15,23 @@ This tutorial will guide you through the process of analyzing and visualizing po
 # Steps:
 
 1. [**Introduction**](#intro)
-  - [Prerequisites](#Prerequisites)
-  - [Overview of the Living Planet Index (LPI) dataset](#Overview)
-  - [Importance of analyzing population trends in ecology](#Importance)
+    - [Prerequisites](#Prerequisites)
+    - [Overview of the Living Planet Index (LPI) dataset](#Overview)
+    - [Importance of analyzing population trends in ecology](#Importance)
 2. [**Part I: Data Preparations**](#Preparations)
-  - [Loading the data](#load)
-  - [Reshaping and cleaning data for analysis](#cleaning)
-  - [Filtering data for House Sparrows](#filter)
+    - [Loading the data](#load)
+    - [Reshaping and cleaning data for analysis](#cleaning)
+    - [Filtering data for House Sparrows](#filter)
 3. [**Exploratory Data Analysis (EDA)**](#EDA)
-  - [Visualizing population distributions using histograms](#Histogram)
-  - [Plotting population trends over time](#Trends)
-  - [Investigating population trends by sampling method](#SampleMeth)
+    - [Visualizing population distributions using histograms](#Histogram)
+    - [Plotting population trends over time](#Trends)
+    - [Investigating population trends by sampling method](#SampleMeth)
 4. [**Part III: Statistical Analysis**](#statisticalanalysis)
-  - [Fitting a mixed-effects model to examine population trends over time](#GLMM)
-  - [Model diagnostics: Checking residuals for model assumptions](#Diagnostics)
+    - [Fitting a mixed-effects model to examine population trends over time](#GLMM)
+    - [Model diagnostics: Checking residuals for model assumptions](#Diagnostics)
 5. [**Part IIII: Model Interpretation and Predictions**](#interpretation)
-  - [Visualizing model predictions and confidence intervals](#visualise)
-  - [Understanding predictions by country and residuals over time](#predictions)
+    - [Visualizing model predictions and confidence intervals](#visualise)
+    - [Understanding predictions by country and residuals over time](#predictions)
 6. [**Summary**](#Summary)
 7. [**Challenge**](#Challenge)
 
@@ -158,6 +158,7 @@ We can see that our data are very right-skewed (i.e. most of the values are rela
 
 ## Plotting Population Trends Over Time
 {: #Trends}
+
 Next, to further explore temporal trends in the population of House sparrows, we can generate a scatter plot of house sparrow population abundance over time, with data points color-coded by country). This plot provides an initial visual indication of any observable trends in population over time and any regional differences.
 
 ```r
@@ -176,6 +177,7 @@ Each point represents a population measurement for a given location and year, co
 
 ## Investigating Population by Sampling Method
 {: #SampleMeth}
+
 Another factor worth considering is sampling method, different methods of collecting data will likely lead to different counts. To examine potential methodological effects, we can plot population counts by sampling method using a boxplot. Differences in counts across sampling methods might indicate that methodological choices impact population estimates, and mean that this is worth including as a random effect in our model.
 
 ```r
@@ -225,7 +227,7 @@ Incorporating `genus_species_id` adds precision by allowing the model to capture
 
 This hierarchical structure allows the model to account for the dataset's nested nature, improving estimation of both time-based and regional impacts on house sparrow populations while controlling for variability across regions, specific locations, sampling methods, and population identities.
 
-If we want to display the model summary table, a nice way to do this is using the `stargazer` package.  Simply plug in your model name, in this case `sparrow.model` into the `stargazer` function. Here we have set `type = "html"`, however there are many other options for outputs, e.g. type = "latex".
+If we want to display the model summary table, a nice way to do this is using the `stargazer` package.  Simply plug in your model name, in this case `sparrow.model` into the `stargazer` function. Here we have set `type = "html"`, however there are many other options for outputs, e.g. `type = "latex"`.
 
 ```r
 # Summarize Model Output in HTML Table
