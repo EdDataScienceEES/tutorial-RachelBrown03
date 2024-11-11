@@ -131,10 +131,19 @@ qqline(resid(sparrow.model))
 dev.off()
 
 
+# Set up file output for the diagnostic plots
+png("figures/diag_plot.png", width = 800, height = 600)
+
+# Generate diagnostic plots in a 2x2 grid
+par(mfrow = c(2, 2))  # Set up a 2x2 plot grid
+plot(sparrow.model, ylim = c(-20, 20), xlim = c(0, 100))  # Diagnostic plots for model fit
+
+# Close the graphics device to save the file
+dev.off()
 par(mfrow = c(2, 2))  # Set up a 2x2 plot grid
 (diag_plot <- plot(sparrow.model, ylim = c(-20, 20), xlim = c(0, 100)) )# Diagnostic plots for model fit
 
-ggsave("figures/diag_plot.png", plot = diag_plot, width = 8, height = 5)
+
 
 # Simulated residuals to check model assumptions
 sim_res <- simulateResiduals(sparrow.model)
