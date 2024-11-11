@@ -26,7 +26,7 @@ This tutorial will guide you through the process of analyzing and visualizing po
   - [Visualizing population distributions using histograms](#Histogram)
   - [Plotting population trends over time](#Trends)
   - [Investigating population trends by sampling method](#SampleMeth)
-4. [**Part III: Statistical Analysis**](#statistical analysis)
+4. [**Part III: Statistical Analysis**](#statisticalanalysis)
   - [Fitting a mixed-effects model to examine population trends over time](#GLMM)
   - [Model diagnostics: Checking residuals for model assumptions](#Diagnostics)
 5. [**Part IIII: Model Interpretation and Predictions**](#interpretation)
@@ -77,6 +77,8 @@ Now we are ready to dive into the investigation!
 
 ----
 # Data Preparations
+{: #Preparations}
+
 To start off, open `RStudio`,  and create a new script by clicking on `File/ New File/ R Script`, and start writing your script with the help of this tutorial.
 ```r
 # Purpose of the script
@@ -127,10 +129,12 @@ house_sparrow_data$Population <- round(house_sparrow_data$Population)  # Round p
 
 ----
 # Exploratory Data Analysis (EDA)
+{: #EDA}
 
 Before diving into statistical modeling, it’s crucial to explore the data visually to understand patterns and distributions. We will use `ggplot2` library for most of our visualizations.
 
 ## Visualizing the Population Distribution with a Histogram
+{: #Histogram}
 
 Let’s look at the distribution of the data to get some idea of what the data look like and what model we could use to answer our research question. Remember, if you put the whole code in the brackets it will display in the plot viewer right away!
 
@@ -153,6 +157,7 @@ ggsave("figures/data_histogram.png", plot = sparrow_hist, width = 10, height = 5
 We can see that our data are very right-skewed (i.e. most of the values are relatively small), indicating that most recorded populations are relatively small, with fewer locations reporting very high population counts. This distribution justifies the use of a GLMM with a Poisson distribution to model count data.
 
 ## Plotting Population Trends Over Time
+{: #Trends}
 Next, to further explore temporal trends in the population of House sparrows, we can generate a scatter plot of house sparrow population abundance over time, with data points color-coded by country). This plot provides an initial visual indication of any observable trends in population over time and any regional differences.
 
 ```r
@@ -170,6 +175,7 @@ ggsave("figures/population_scatter.png", plot = sparrow_scatter, width = 10, hei
 Each point represents a population measurement for a given location and year, color-coded by country. The plot shows possible declining trends, motivating a model that includes time and regional effects.
 
 ## Investigating Population by Sampling Method
+{: #SampleMeth}
 Another factor worth considering is sampling method, different methods of collecting data will likely lead to different counts. To examine potential methodological effects, we can plot population counts by sampling method using a boxplot. Differences in counts across sampling methods might indicate that methodological choices impact population estimates, and mean that this is worth including as a random effect in our model.
 
 ```r
@@ -188,23 +194,72 @@ The plot shows that there is a clear variation in population estimates due to di
 
 ----
 # Statistical Analysis
+{: #statisticalanalysis}
 
-To model the population trends over time, we’ll use a mixed-effects model because the data has hierarchical structure (e.g., multiple records from the same country or location). This allows us to account for both fixed effects (Year) and random effects (Sampling Method, Country).
+To investigate the relationship between time, region, and sparrow population trends, a **Generalized Linear Mixed Model (GLMM)** was used. This model is well-suited for our data and research goals because it accommodates:
 
-## Fitting a Mixed-Effects Model
+- **Non-normal count data:** Sparrows are counted, not continuously measured
+- **Random Effects:** Sampling method, country, population location (nested within country), and  `genus_species_id` (unique identifier for each population) capture effects of methodological differences, regional variations, local effects, and individual population differences.
 
+### Fitting a Mixed-Effects Model
 ```r
 # Scale Year for Model Stability
 house_sparrow_data$Year_scaled <- house_sparrow_data$Year - min(house_sparrow_data$Year)
 
-# Fit a mixed-effects model with Year as a fixed effect and random intercepts for Sampling Method and Country
-sparrow.model <- glmer(Population ~ Year_scaled + (1|Sampling.method) + (1 | Country.list/Location.of.population) + (1|genus_species_id), 
+# Fit the model
+sparrow.model <- glmer(Population ~ Year_scaled + (1|Sampling.method) + 
+                       (1 | Country.list/Location.of.population) + (1|genus_species_id), 
                        data = house_sparrow_data, 
                        family = "poisson")
 
 # Summarize the model
 summary(sparrow.model)
 ```
+
+Here we have used, 
+
+- **Fixed Effects:** Year (to observe trends over time) 
+- **Random Effects:** Country (to capture regional differences), Location of Population nested within Country (to capture local variations within each country), Sampling Method (to account for variations due to differing methodologies), and `genus_species_id` (to account for population-specific differences).
+
+Incorporating `genus_species_id` adds precision by allowing the model to capture unique characteristics of each population, enhancing the accuracy of temporal and regional effect estimations.
+
+This hierarchical structure allows the model to account for the dataset's nested nature, improving estimation of both time-based and regional impacts on house sparrow populations while controlling for variability across regions, specific locations, sampling methods, and population identities.
+
+If we want to display the model summary table, a nice way to do this is using the `stargazer` package.  Simply plug in your model name, in this case `sparrow.model` into the `stargazer` function. Here we have set `type = "html"`, however there are many other options for outputs, e.g. type = "latex".
+
+```r
+# Summarize Model Output in HTML Table
+stargazer(sparrow.model, type = "html",
+          digits = 3,
+          star.cutoffs = c(0.05, 0.01, 0.001),
+          digit.separator = "")
+```
+Where we get the following outut:
+
+<table style="text-align:center"><tr><td colspan="2" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left"></td><td><em>Dependent variable:</em></td></tr>
+<tr><td></td><td colspan="1" style="border-bottom: 1px solid black"></td></tr>
+<tr><td style="text-align:left"></td><td>Population</td></tr>
+<tr><td colspan="2" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">Year_scaled</td><td>-0.066<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.0003)</td></tr>
+<tr><td style="text-align:left"></td><td></td></tr>
+<tr><td style="text-align:left">Constant</td><td>5.322<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.566)</td></tr>
+<tr><td style="text-align:left"></td><td></td></tr>
+<tr><td colspan="2" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">Observations</td><td>1211</td></tr>
+<tr><td style="text-align:left">Log Likelihood</td><td>-14655.630</td></tr>
+<tr><td style="text-align:left">Akaike Inf. Crit.</td><td>29323.250</td></tr>
+<tr><td style="text-align:left">Bayesian Inf. Crit.</td><td>29353.850</td></tr>
+<tr><td colspan="2" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left"><em>Note:</em></td><td style="text-align:right"><sup>*</sup>p<0.05; <sup>**</sup>p<0.01; <sup>***</sup>p<0.001</td></tr>
+</table>
+
+The model output indicates a statistically significant negative effect of time (`Year_scaled`) on population counts, suggesting an overall decline in house sparrow populations over the study period. Specifically, the fixed effect of `Year_scaled` has an estimated coefficient of -0.066 (p < 0.001), which implies a decline rate of about 6.39% per year. In other words, each year, the expected house sparrow population decreases to approximately 93.61% of the population size from the previous year. 
+
+
+You may wonder how we calculated the decline rate of 6.39% from the coefficient of -0.066. This is because the model uses a Poisson distribution with a log link function. In such a model, the coefficients are on the log scale, meaning that to interpret the effect in terms of the original population counts, we must exponentiate the coefficient.
+
+Exponentiating the coefficient of -0.066 gives us approximately 0.9361, which corresponds to a 6.39% decline each year (1 - 0.9361 = 0.0639, or 6.39%). This means that, each year, the expected population of house sparrows decreases by about 6.39% relative to the previous year.
+
+------
 
 ## Model Diagnostics: Checking Residuals
 ```r
