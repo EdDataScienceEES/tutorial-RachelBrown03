@@ -287,7 +287,13 @@ qqline(resid(sparrow.model))
 sim_res <- simulateResiduals(sparrow.model)
 plot(sim_res)  # Displays QQ plots and additional diagnostics
 ```
+![alt text](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/figures/qqplot_residuals.png)
+
+![alt text](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/figures/diag_plot.png)
+
 The QQ plot and simulated residuals plot provide visual checks for any deviations from model assumptions. If the points on the QQ plot deviate substantially from the reference line, it may indicate non-normality of residuals. Simulated residuals provide a comprehensive diagnostic, highlighting any issues related to distributional assumptions or patterns that may need further examination or model adjustment.
+
+
 
 ----
 # Model Interpretation and Predictions
