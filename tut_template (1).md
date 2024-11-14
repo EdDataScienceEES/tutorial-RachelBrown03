@@ -44,6 +44,15 @@ This tutorial will guide you through the process of analyzing and visualizing po
 
 The **Living Planet Index (LPI)** is a global dataset that tracks the population trends of species worldwide. By analyzing these trends, scientists and conservationists can identify which species or regions face the most significant threats, helping to prioritize conservation efforts. Population trends are central in biodiversity studies as they provide insights into ecosystem health, reveal potential environmental stressors, and inform policy-making on biodiversity conservation.
 
+## Research Question and Hypotheses
+Before analyzing any data, defining your research question and hypotheses is essential. This helps guide the analysis process, ensuring each step supports a broader investigation.
+
+- **Research Question:** How has the population of House Sparrows (Passer domesticus) changed over time, and are there significant regional differences in these trends?
+- **Hypotheses:**
+  - House Sparrow populations have declined over the observation period.
+  - Regional trends vary, with differences in population decline rates possibly due to factors like urbanization and conservation efforts.
+  
+
 ## Prerequisites
 {: #Prerequisites}
 
@@ -283,17 +292,39 @@ To ensure the validity of our model, we’ll examine residuals to verify that mo
 qqnorm(resid(sparrow.model))
 qqline(resid(sparrow.model))
 
-# Simulated residuals to check model assumptions
-sim_res <- simulateResiduals(sparrow.model)
-plot(sim_res)  # Displays QQ plots and additional diagnostics
+plot(sparrow.model, ylim = c(-20, 20), xlim = c(0, 100))  # Diagnostic plots for model fit
 ```
+
 ![alt text](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/figures/qqplot_residuals.png)
 
 ![alt text](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/figures/diag_plot.png)
 
 The QQ plot and simulated residuals plot provide visual checks for any deviations from model assumptions. If the points on the QQ plot deviate substantially from the reference line, it may indicate non-normality of residuals. Simulated residuals provide a comprehensive diagnostic, highlighting any issues related to distributional assumptions or patterns that may need further examination or model adjustment.
 
+```r
+# Simulated residuals to check model assumptions
+sim_res <- simulateResiduals(sparrow.model)
+plot(sim_res)  # Displays QQ plots and additional diagnostics
+```
+We can now use the **DHARMa** (Diagnostics for Hierarchical (Multi-level / Mixed) Regression Models) package to evaluate model assumptions for our mixed-effects model. Unlike traditional residual diagnostics, which may be inadequate for complex hierarchical structures, DHARMa generates **simulated residuals** based on the model’s distribution (in this case, Poisson) to create standardized residuals.
 
+Using `plot(sim_res)`, DHARMa produces several diagnostic plots:
+
+- **QQ Plot:** Compares the distribution of simulated residuals to a uniform distribution, revealing any deviations from the expected pattern.
+- **Residual vs. Predicted Plot:** Checks for heteroscedasticity (changing variance) and model misspecification.
+- **Outlier Detection:** Identifies data points that do not fit the model well.
+- **Autocorrelation Checks:** For spatial or temporal data, these tests identify unmodeled correlations.
+  
+DHARMa diagnostics thus provide robust insights into the fit and assumptions of mixed models, addressing both distributional and hierarchical structures in the data.
+
+```r
+# Simulated residuals to check model assumptions
+sim_res <- simulateResiduals(sparrow.model)
+plot(sim_res)  # Displays QQ plots and additional diagnostics
+```
+![alt text](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/figures/DHARMa_diagnostic_plots.png)
+
+Here we can see, that these plots show possible issues with the model fit, but we will continue the anaysis as part of this tutorial anyway.
 
 ----
 # Model Interpretation and Predictions
@@ -318,7 +349,13 @@ pred.mm <- ggpredict(sparrow.model, terms = c("Year_scaled"))
 # Save the plot
 ggsave("figures/Overall_House_Sparrow_Population_Trends.png", plot = reg_line_plot, width = 8, height = 6)
 ```
+![alt text](https://github.com/EdDataScienceEES/https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/figures/Overall_House_Sparrow_Population_Trends.png)
+
 This plot demonstrates the population trend over time for house sparrows, with the ribbon capturing the confidence interval. The negative trend indicates a decline in population, aligning with the model’s findings.
+
+However, it is hard to properly visualise the relationship in this figure due to the increased counts in some locations, namely Australia, making it difficult to see any relationship. To tackle this we display a second plot with an adjust axis for population count to illustrate the relationship more clearly.
+
+![alt text](https://github.com/EdDataScienceEES/challenge-3-RachelBrown03/blob/master/figures/Overall_House_Sparrow_Population_Trends_zoomed.png)
 
 ## Predictions by Country
 
