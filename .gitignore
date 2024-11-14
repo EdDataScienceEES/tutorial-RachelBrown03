@@ -15,6 +15,7 @@
 /*.Rcheck/
 
 # RStudio files
+tutorial-RachelBrown03.Rproj
 .Rproj.user/
 
 # produced vignettes
