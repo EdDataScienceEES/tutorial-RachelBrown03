@@ -1,8 +1,7 @@
 # Data Science in EES 2024
+# Tutorial on Analyzing Population Trends in Biodiversity Using the LPI Dataset
 # Rachel Brown (s2206797)
 # 11th November 2024
-
-# Starter code ----
 
 # Libraries
 library(tidyverse)  # Data manipulation and visualization
@@ -209,3 +208,30 @@ residuals_data <- data.frame(
 
 ggsave("figures/Residuals_from_Mixed_Model.png", plot = res_plot, width = 8, height = 6)
 
+
+## Try a better model
+
+# Fit the Mixed Model
+sparrow.model2 <- glmer(Population ~ Year_scaled  + (1|Sampling.method) + (1|genus_species_id), 
+                       data = house_sparrow_data, 
+                       family = "poisson")
+
+summary(sparrow.model2)
+
+# Simulated residuals to check model assumptions
+sim_res2 <- simulateResiduals(sparrow.model2)
+plot(sim_res2)  # Displays QQ plots and additional diagnostics
+
+# Fit the Mixed Model
+sparrow.model3 <- glmer(Population ~ Year_scaled + (1|Sampling.method), 
+                       data = house_sparrow_data, 
+                       family = "poisson")
+
+summary(sparrow.model3)
+
+# Simulated residuals to check model assumptions
+sim_res3 <- simulateResiduals(sparrow.model3)
+plot(sim_res3)  # Displays QQ plots and additional diagnostics
+
+
+summary(sparrow.model)
