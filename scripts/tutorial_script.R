@@ -36,9 +36,13 @@ sample_means <- replicate(n_samples, {
 })
 
 # Plot the distribution of sample means
-ggplot(data.frame(sample_means = sample_means), aes(x = sample_means)) +
+samplemean_plot <- ggplot(data.frame(sample_means = sample_means), aes(x = sample_means)) +
   geom_histogram(binwidth = 10, color = "black", fill = "lightgreen") +
-  labs(title = "Sampling Distribution of Body Mass Means", x = "Mean Body Mass (g)", y = "Frequency")
+  labs(title = "Sampling Distribution of Body Mass Means", x = "Mean Body Mass (g)", y = "Frequency") +
+  theme_minimal()
+
+ggsave("figures/samplemean_plot.png", plot = samplemean_plot, width = 10, height = 5)
+
 
 
 # Function to calculate sample means for different sample sizes
@@ -57,11 +61,21 @@ sample_means_df <- data.frame(
   sample_size = factor(rep(c(10, 50, 100), each = n_samples))
 )
 
-ggplot(sample_means_df, aes(x = sample_mean, fill = sample_size)) +
+sampledist_plot <- ggplot(sample_means_df, aes(x = sample_mean, fill = sample_size)) +
   geom_histogram(binwidth = 50, color = "black", alpha = 0.6, position = "identity") +
   facet_wrap(~ sample_size) +
   labs(title = "Sampling Distributions of Body Mass Means", x = "Mean Body Mass (g)", y = "Frequency")+
   theme_minimal()
+
+ggsave("figures/sampledist_plot.png", plot = sampledist_plot, width = 10, height = 5)
+
+# Calculate summary statistics for each sample size
+summary_stats <- sample_means_df %>%
+  group_by(sample_size) %>%
+  summarize(
+    mean = mean(sample_mean),
+    sd = sd(sample_mean)
+  )
 
 # Calculate normal distribution curves for each sample size
 normal_curves <- summary_stats %>%
@@ -77,7 +91,7 @@ normal_curves <- summary_stats %>%
   unnest(cols = c(x, y))
 
 # Plot the histograms with normal distribution curves
-ggplot(sample_means_df, aes(x = sample_mean, fill = sample_size)) +
+curves_plot <- ggplot(sample_means_df, aes(x = sample_mean, fill = sample_size)) +
   geom_histogram(binwidth = 50, color = "black", alpha = 0.6) +
   facet_wrap(~ sample_size) +
   labs(
@@ -95,3 +109,4 @@ ggplot(sample_means_df, aes(x = sample_mean, fill = sample_size)) +
   scale_color_manual(values = c("red", "green", "blue")) +
   theme(legend.position = "none")
 
+ggsave("figures/curves_plot.png", plot = curves_plot, width = 10, height = 5)
