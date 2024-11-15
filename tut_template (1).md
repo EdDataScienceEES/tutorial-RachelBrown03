@@ -220,6 +220,7 @@ ggplot(sample_means_df, aes(x = sample_mean, fill = sample_size)) +
   theme_minimal()
 
 ```
+![alt text](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/figures/sampledist_plot.png)
 
 # Adding Normal Distribution Curves
 Now, let's add a **normal distribution curve** to the plot to visually compare how well the sample means approximate a normal distribution. The normal curve will be based on the mean and standard deviation of the sample means.
@@ -265,46 +266,8 @@ ggplot(sample_means_df, aes(x = sample_mean, fill = sample_size)) +
   theme(legend.position = "none")
 
 ```
+![alt text](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/figures/curves_plot.png)
 
-```r
-# Function to generate sampling distributions
-generate_sampling_distribution <- function(data, sample_size, num_samples) {
-    sample_means <- replicate(num_samples, mean(sample(data$flipper_length_mm, sample_size, replace = TRUE), na.rm = TRUE))
-    return(sample_means)
-}
-
-# Generate sampling distributions for sample sizes of 10, 30, 50, and 100
-set.seed(123)
-samples_10 <- generate_sampling_distribution(penguins, 10, 1000)
-samples_30 <- generate_sampling_distribution(penguins, 30, 1000)
-samples_50 <- generate_sampling_distribution(penguins, 50, 1000)
-samples_100 <- generate_sampling_distribution(penguins, 100, 1000)
-```
-
-## Visualizing Sampling Distributions
-{: #Histograms}
-
-Using `ggplot2`, we’ll visualize these sampling distributions to see the CLT at work.
-
-```r
-# Combine sampling distributions into a data frame for visualization
-sample_data <- tibble(
-    Sample_Mean = c(samples_10, samples_30, samples_50, samples_100),
-    Sample_Size = factor(rep(c(10, 30, 50, 100), each = 1000))
-)
-
-# Plot the sampling distributions
-ggplot(sample_data, aes(x = Sample_Mean, fill = Sample_Size)) +
-    geom_histogram(position = "identity", alpha = 0.6, bins = 30) +
-    facet_wrap(~Sample_Size, scales = "free_y") +
-    labs(title = "Sampling Distributions of Mean Flipper Length",
-         x = "Sample Mean of Flipper Length (mm)",
-         y = "Frequency") +
-    theme_minimal() +
-    scale_fill_brewer(palette = "Set3")
-```
-
-Each facet shows the distribution of sample means for different sample sizes. As sample size increases, the distribution becomes more bell-shaped.
 
 ---
 # Applying the Central Limit Theorem
