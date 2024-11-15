@@ -10,91 +10,65 @@ To add images, replace `tutheaderbl1.png` with the file name of any image you up
 
 #### <a href="#section3"> 3. The third section</a>
 
-# Analyzing Population Trends in Biodiversity Using the LPI Dataset
- 
-This tutorial will guide you through the process of analyzing and visualizing population trends using the **Living Planet Index (LPI)** dataset, specifically focusing on a single species, **House Sparrow**. It covers data manipulation, statistical modeling (including mixed models), and visualization techniques to help you understand population dynamics over time. By the end, you'll have gained hands-on experience with exploratory data analysis, fitting and interpreting mixed-effects models, and visualizing results, equipping you to study other species' trends using similar methods.
+# Investigating The Central Limit Theorem
+
+In this tutorial, we'll apply the **Central Limit Theorem (CLT)** to sample data from the Palmer Penguins dataset, demonstrating how sampling distributions of the mean approach a normal distribution as sample size increases. This is useful for understanding how ecological data, even when skewed or not normally distributed, can be analyzed with the CLT. We'll focus on penguin flipper lengths as a non-normally distributed variable to illustrate the process.
 
 # Steps:
 
 1. [**Introduction**](#intro)
     - [Prerequisites](#Prerequisites)
     - [Data and Materials](#DataMat)
-    - [Overview of the Living Planet Index (LPI) dataset](#Overview)
-    - [Importance of analyzing population trends in ecology](#Importance)
-2. [**Part I: Data Preparations**](#Preparations)
-    - [Loading the data](#load)
-    - [Reshaping and cleaning data for analysis](#cleaning)
-    - [Filtering data for House Sparrows](#filter)
-3. [**Exploratory Data Analysis (EDA)**](#EDA)
-    - [Visualizing population distributions using histograms](#Histogram)
-    - [Plotting population trends over time](#Trends)
+    - [Overview of the Central Limit Theorem](#Overview)
+    - [Importance of Sampling Distributions in Ecology](#Importance)
+2. [**Data Preparations**](#Preparations)
+    - [Loading and Inspecting the Data](#load)
+    - [Selecting a Non-Normally Distributed Variable](#selection)
+3. [**Sampling Distributions**](#Sampling)
+    - [Generating Sampling Distributions for Different Sample Sizes](#generating)
+    - [Visualizing Sampling Distributions Using Histograms](#histogram)
     - [Investigating population trends by sampling method](#SampleMeth)
-4. [**Part III: Statistical Analysis**](#statisticalanalysis)
-    - [Fitting a mixed-effects model to examine population trends over time](#GLMM)
-    - [Model diagnostics: Checking residuals for model assumptions](#Diagnostics)
-5. [**Part IIII: Model Interpretation and Predictions**](#interpretation)
-    - [Visualizing model predictions and confidence intervals](#visualise)
-    - [Understanding predictions by country and residuals over time](#predictions)
-6. [**Summary**](#Summary)
+4. [**Applying the Central Limit Theorem**](#CLT)
+    - [Effect of Sample Size on Distribution Shape](#effect)
+6. [**Summary and Interpretation**](#Summary)
 7. [**Challenge**](#Challenge)
 
 ----
 # 1. Introduction
 {: #intro}
 
-The **Living Planet Index (LPI)** is a global dataset that tracks the population trends of species worldwide. By analyzing these trends, scientists and conservationists can identify which species or regions face the most significant threats, helping to prioritize conservation efforts. Population trends are central in biodiversity studies as they provide insights into ecosystem health, reveal potential environmental stressors, and inform policy-making on biodiversity conservation.
+The **Central Limit Theorem (CLT)** is fundamental in ecological studies, especially for analyzing population distributions where full population data collection is often impractical. The CLT states that the distribution of sample means approximates a normal distribution as sample size increases, even when the population distribution is not normal.
 
-## Research Question and Hypotheses
-Before analyzing any data, defining your research question and hypotheses is essential. This helps guide the analysis process, ensuring each step supports a broader investigation.
+In ecology, data often come from field observations of wildlife populations, which tend to be non-normal. However, many statistical tests assume normality, which raises a key question: **How can we work with data that doesn’t follow a normal distribution?** The CLT is crucial here because it allows us to make inferences using sample means, even if the original data are not normally distributed. By studying the CLT, we can understand the behavior of sample means and use this information in statistical modeling and hypothesis testing in ecology.
 
-- **Research Question:** How has the population of House Sparrows (Passer domesticus) changed over time, and are there significant regional differences in these trends?
-- **Hypotheses:**
-  - House Sparrow populations have declined over the observation period.
-  - Regional trends vary, with differences in population decline rates possibly due to factors like urbanization and conservation efforts.
-  
+This tutorial will use the Palmer Penguins dataset, which contains data on three penguin species. We’ll focus on measurements like body mass and flipper length to see how sample means approximate a normal distribution, regardless of the underlying population shape.
+
+By the end of this tutorial, you will have a practical understanding of the Central Limit Theorem and how to apply it to data analysis, allowing you to draw meaningful insights from ecological data, even in situations where traditional assumptions do not hold.
+
 
 ## Prerequisites
 {: #Prerequisites}
 
-This tutorial is suitable for learners with a basic to intermediate understanding of data analysis and statistical modeling. If you are a beginner, you'll gain an understanding of key concepts such as data reshaping, data visualization, and basic statistical models. Intermediate learners will be able to extend these concepts by applying mixed-effects models, model diagnostics, and interpretation of results.
+This tutorial is designed for beginners and intermediate learners in statistics and data analysis. Depending on your familiarity with statistical concepts, you may find different parts of the tutorial useful. If you’re new to the Central Limit Theorem, this tutorial will provide a solid introduction, while those with some statistical background will gain a deeper understanding of sampling distributions and practical applications of the CLT.
 
-To get the most out of this tutorial, you should have a basic understanding of the following:
+To get the most out of this tutorial, a basic understanding of descriptive statistics (e.g., mean, variance) and probability will be helpful. Familiarity with linear models is also recommended, as we’ll discuss their assumptions briefly. Some knowledge of algebra, particularly with functions and basic manipulations, can enhance your understanding, but it’s not essential, no prior knowledge of advanced mathematics is required, as we’ll focus on applying concepts rather than complex math.
 
-- **Descriptive statistics:** A fundamental understanding of measures like mean, median, variance, and how to interpret distributions.
-- **Linear models:** Knowledge of how to work with simple regression models (e.g., lm() function in R) and understanding of fixed vs. random effects in modeling.
-- **Algebra:** Basic algebraic concepts (e.g., manipulating equations and understanding functions) will help you grasp the underlying statistical models.
+The tutorial is structured around the `R` programming language, but the concepts apply across other statistical software as well. If you’re following along in `R`, you’ll benefit from a foundational understanding of data manipulation with `dplyr` and `tidyr` and basic data visualization with `ggplot2`. If these packages are new to you, consider reviewing introductory resources, as they will help you interpret and create visualizations of the data used in this tutorial.
 
-Throughout the tutorial, we will be using `R`. While the statistical concepts can be applied across different languages, familiarity with R will enhance your experience. Specifically, you should be comfortable with:
-
-- **Data manipulation with `dplyr`:** Transforming, cleaning, and filtering data.
-- **Data reshaping with `tidyr`:** Pivoting data into long format and handling missing values.
-- **Data visualization with `ggplot2`:** Creating plots to explore and communicate data patterns.
-  
 If you are new to any of these tools or want to refresh your skills, we recommend reviewing the following tutorials on the Coding Club website:
 
 - [Intro to R](https://ourcodingclub.github.io/tutorials/intro-to-r/)   
 - [Basic Data Manipulation](https://ourcodingclub.github.io/tutorials/data-manip-intro/)
 - [Data Visualization](https://ourcodingclub.github.io/tutorials/datavis/)
 
-Having these skills will help you fully engage with the content and follow along with the hands-on coding examples.
+Once you’ve reviewed these foundational skills, you’ll be ready to dive into the world of sampling distributions and explore the Central Limit Theorem in ecological data analysis!
 
 ## Data and Materials
 {: #DataMat}
 
-You can find all the data that you require for completing this tutorial on this [GitHub repository](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/tree/master). We encourage you to download the data to your computer and work through the examples along the tutorial as this reinforces your understanding of the concepts taught in the tutorial.
+For this tutorial, we’ll be using the `palmerpenguins` dataset in R, which provides ecological data on penguins’ physical characteristics. If you’d like to follow along, install the `palmerpenguins` package and load the data using R. Throughout the tutorial, we’ll explore sampling distributions of penguin flipper lengths to see how the Central Limit Theorem helps us understand and interpret sample-based measurements from a larger population.
 
-Now we are ready to dive into the investigation!
-
-## Overview of the Living Planet Index (LPI) Dataset
-{: #Overview}
-The **Living Planet Index (LPI)** dataset provides population trends for thousands of vertebrate species worldwide, recorded from 1970 onwards. Each row in the dataset represents a specific population for a given species, recorded at a location, and includes information such as the species' name, location, sampling method, and population abundance across multiple years.
-
-The LPI data are valuable in ecological studies, as they allow for tracking changes in biodiversity. With statistical modeling, we can quantify these changes and investigate factors that may influence population trends, such as location, sampling methodology, and year.
-
-## Importance of Analyzing Population Trends in Ecology
-{: #Importance}
-
-Understanding population trends is crucial for conservation and biodiversity management. Population data help identify species in decline, suggest possible causes, and guide interventions to support ecosystem health. Analyzing population trends over time offers insights into broader ecological changes, potential threats like habitat loss or climate change, and the effectiveness of conservation efforts. Through this tutorial, you'll learn how to leverage data analysis and visualization techniques to detect these trends and gain insights into ecological dynamics.
+Let’s dive into how the Central Limit Theorem can simplify data analysis and allow us to derive meaningful insights from a wide range of ecological data!
 
 ----
 # Data Preparations
@@ -106,290 +80,132 @@ To start off, open `RStudio`,  and create a new script by clicking on `File/ New
 # Your name, date and email
 
 # Your working directory, set to the folder you just downloaded from Github, e.g.:
-setwd("~/Downloads/CC-Analyzing-Pop-Trends")
+setwd("~/Downloads/CC-intro-to-CLT")
 
-# Libraries - if you haven't installed them before, run the code install.packages("package_name")
-library(tidyverse)  # Data manipulation and visualization
-library(lme4)       # Mixed models
-library(broom)      # Tidying model outputs
-library(ggplot2)    # Visualization
-library(DHARMa)     # Residual diagnostics for mixed models
-library(ggeffects)  # Model predictions
-library(stargazer)  # Model summary formatting
+# Install the package (if not already installed)
+install.packages("palmerpenguins")
+
+# Load the package
+library(palmerpenguins)
 ```
-
-We will use data from the [Living Planet Index](https://www.livingplanetindex.org/), which you have already downloaded from the [Github repository](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/tree/master/data) (Click on `Clone or Download/Download ZIP` and then unzip the files).
+After loading the package, you can load and view the penguins dataset directly:
 
 ```r
-# Import data from the Living Planet Index - population trends of species from 1970 to 2014
-LPI <- read.csv("LPI_data.csv")
+# Load the penguins data
+data("penguins")
+
+# View the first few rows of the data to get familiar with its structure
+head(penguins)
 ```
-The data are in wide format - the different years are column names, when really they should be rows in the same column, so we will use `pivot_longer()` to change the data into long format. Also note, there is an ‘X’ in front of all the years because when we imported the data, all column names became characters. (The X is R’s way of turning numbers into characters.) Now that the years are rows, not columns, we need them to be proper numbers, so we will transform them using `parse_number()` from the `readr` package. We then remove NA or infinite values to make the dta easier to work with for modelling and visualisation.
-
-```r
-# Reshape data into long format for easier analysis
-LPI_long <- data %>%
-  pivot_longer(cols = 25:69, names_to = "Year", values_to = "Population") %>%
-  mutate(
-    Year = parse_number(Year),  # Convert year to numeric
-    genus_species = paste(Genus, Species, sep = "_"),
-    genus_species_id = paste(Genus, Species, id, sep = "_")
-  ) %>%
-  filter(is.finite(Population), !is.na(Population))  # Remove NA or infinite values
-```
-
-Now, we must filter out just the records for just the species we are interested in, in this case House sparrows. We can do this by fitering for where `Common.Name` is House sparrow. and we then round the population to the nearest integer as it is count data so half a sparrow is not much use to us!
-
-```r
-# Filter data for House Sparrows
-house_sparrow_data <- LPI_long %>%
-  filter(Common.Name == "House sparrow")
-
-house_sparrow_data$Population <- round(house_sparrow_data$Population)  # Round population numbers for analysis
-```
+Now that the dataset is loaded, you’re ready to dive into the tutorial and explore the Central Limit Theorem in action!
 
 ----
-# Exploratory Data Analysis (EDA)
-{: #EDA}
+# 4. Part I: Understanding the Central Limit Theorem
 
-Before diving into statistical modeling, it’s crucial to explore the data visually to understand patterns and distributions. We will use `ggplot2` library for most of our visualizations.
+The CLT states that if you take sufficiently large random samples from any population, the distribution of the sample means will approximate a normal distribution, even if the population itself is not normally distributed. Let’s see how this applies to our penguin data.
 
-## Visualizing the Population Distribution with a Histogram
-{: #Histogram}
+## Step 1: Explore the Distribution of the Population Data
+Before diving into the CLT, let’s examine the distribution of the original penguin body mass and flipper length measurements.
 
-Let’s look at the distribution of the data to get some idea of what the data look like and what model we could use to answer our research question. Remember, if you put the whole code in the brackets it will display in the plot viewer right away!
+First we will remove the rows with missing values to make our data easier to work with
 
 ```r
-# Histogram of House Sparrow population data
-(sparrow_hist <- ggplot(house_sparrow_data, aes(Population)) + 
-   geom_histogram(binwidth = 500, fill = "#69b3a2", alpha = 0.7) +  
-   labs(title = "Distribution of House Sparrow Population", 
-        x = "Population Abundance", 
-        y = "Frequency") + 
-   theme_bw())
+# Remove rows with missing values for simplicity
+penguins_clean <- na.omit(penguins)
 ```
+Now we are ready to plot
+
+```r
+# Plot the distributions of body mass and flipper length
+body_mass <- ggplot(penguins_clean, aes(x = body_mass_g)) +
+  geom_histogram(binwidth = 200, color = "black", fill = "skyblue") +
+  labs(title = "Distribution of Penguin Body Mass", x = "Body Mass (g)")
+
+flipper_len <- ggplot(penguins_clean, aes(x = flipper_length_mm)) +
+  geom_histogram(binwidth = 5, color = "black", fill = "salmon") +
+  labs(title = "Distribution of Penguin Flipper Length", x = "Flipper Length (mm)")
+
+```
+
 We can save the figure and give it exact dimensions using `ggsave` from the `ggplot2` package. The file will be saved to wherever your working directory is, which you can check by running `getwd()` in the console.
 
 ```r
-ggsave("figures/data_histogram.png", plot = sparrow_hist, width = 10, height = 5)
+ggsave("figures/body_mass.png", plot = sparrow_hist, width = 10, height = 5)
 ```
-![alt text](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/figures/data_histogram.png)
+![alt text](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/figures/body_mass.png)
 
-We can see that our data are very right-skewed (i.e. most of the values are relatively small), indicating that most recorded populations are relatively small, with fewer locations reporting very high population counts. This distribution justifies the use of a GLMM with a Poisson distribution to model count data.
-
-## Plotting Population Trends Over Time
-{: #Trends}
-
-Next, to further explore temporal trends in the population of House sparrows, we can generate a scatter plot of house sparrow population abundance over time, with data points color-coded by country). This plot provides an initial visual indication of any observable trends in population over time and any regional differences.
-
-```r
-# Scatter plot of population over time
-(sparrow_scatter <- ggplot(data = house_sparrow_data) +
-    geom_point(aes(x = Year, y = Population, colour = Country.list), alpha = 0.9) +
-    labs(x = 'Year', y = 'Population Abundance', title = 'Population Trends of House Sparrow') +
-    theme_bw())
-
-# Save the plot
-ggsave("figures/population_scatter.png", plot = sparrow_scatter, width = 10, height = 5)
-```
-![alt text](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/figures/population_scatter.png)
-
-Each point represents a population measurement for a given location and year, color-coded by country. The plot shows possible declining trends, motivating a model that includes time and regional effects.
-
-## Investigating Population by Sampling Method
-{: #SampleMeth}
-
-Another factor worth considering is sampling method, different methods of collecting data will likely lead to different counts. To examine potential methodological effects, we can plot population counts by sampling method using a boxplot. Differences in counts across sampling methods might indicate that methodological choices impact population estimates, and mean that this is worth including as a random effect in our model.
-
-```r
-# Boxplot of population counts by sampling method
-(sampling_boxplot <- ggplot(house_sparrow_data, aes(x = Sampling.method, y = Population)) +
-    geom_boxplot(fill = '#69b3a2') +
-    labs(x = 'Sampling Method', y = 'Population Count', title = 'Population Count by Sampling Method') +
-    theme_minimal())
-
-# Save the plot
-ggsave("figures/sampling_method_boxplot.png", plot = sampling_boxplot, width = 10, height = 5)
-```
-![alt text](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/figures/sampling_method_boxplot.png)
-
-The plot shows that there is a clear variation in population estimates due to different sampling methodologies, supporting the decision to include Sampling Method as a random effect in the model to control for these differences. `Weekly Counts` appears to have a massively inflated count comapred to other methods.
-
-----
-# Statistical Analysis
-{: #statisticalanalysis}
-
-To investigate the relationship between time, region, and sparrow population trends, a **Generalized Linear Mixed Model (GLMM)** was used. This model is well-suited for our data and research goals because it accommodates:
-
-- **Non-normal count data:** Sparrows are counted, not continuously measured
-- **Random Effects:** Sampling method, country, population location (nested within country), and  `genus_species_id` (unique identifier for each population) capture effects of methodological differences, regional variations, local effects, and individual population differences.
-
-### Fitting a Mixed-Effects Model
-```r
-# Scale Year for Model Stability
-house_sparrow_data$Year_scaled <- house_sparrow_data$Year - min(house_sparrow_data$Year)
-
-# Fit the model
-sparrow.model <- glmer(Population ~ Year_scaled + (1|Sampling.method) + 
-                       (1 | Country.list/Location.of.population) + (1|genus_species_id), 
-                       data = house_sparrow_data, 
-                       family = "poisson")
-
-# Summarize the model
-summary(sparrow.model)
-```
-
-Here we have used, 
-
-- **Fixed Effects:** Year (to observe trends over time) 
-- **Random Effects:** Country (to capture regional differences), Location of Population nested within Country (to capture local variations within each country), Sampling Method (to account for variations due to differing methodologies), and `genus_species_id` (to account for population-specific differences).
-
-Incorporating `genus_species_id` adds precision by allowing the model to capture unique characteristics of each population, enhancing the accuracy of temporal and regional effect estimations.
-
-This hierarchical structure allows the model to account for the dataset's nested nature, improving estimation of both time-based and regional impacts on house sparrow populations while controlling for variability across regions, specific locations, sampling methods, and population identities.
-
-If we want to display the model summary table, a nice way to do this is using the `stargazer` package.  Simply plug in your model name, in this case `sparrow.model` into the `stargazer` function. Here we have set `type = "html"`, however there are many other options for outputs, e.g. `type = "latex"`.
-
-```r
-# Summarize Model Output in HTML Table
-stargazer(sparrow.model, type = "html",
-          digits = 3,
-          star.cutoffs = c(0.05, 0.01, 0.001),
-          digit.separator = "")
-```
-Where we get the following outut:
-
-<table style="text-align:center"><tr><td colspan="2" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left"></td><td><em>Dependent variable:</em></td></tr>
-<tr><td></td><td colspan="1" style="border-bottom: 1px solid black"></td></tr>
-<tr><td style="text-align:left"></td><td>Population</td></tr>
-<tr><td colspan="2" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">Year_scaled</td><td>-0.066<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(0.0003)</td></tr>
-<tr><td style="text-align:left"></td><td></td></tr>
-<tr><td style="text-align:left">Constant</td><td>5.322<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(0.566)</td></tr>
-<tr><td style="text-align:left"></td><td></td></tr>
-<tr><td colspan="2" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">Observations</td><td>1211</td></tr>
-<tr><td style="text-align:left">Log Likelihood</td><td>-14655.630</td></tr>
-<tr><td style="text-align:left">Akaike Inf. Crit.</td><td>29323.250</td></tr>
-<tr><td style="text-align:left">Bayesian Inf. Crit.</td><td>29353.850</td></tr>
-<tr><td colspan="2" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left"><em>Note:</em></td><td style="text-align:right"><sup>*</sup>p<0.05; <sup>**</sup>p<0.01; <sup>***</sup>p<0.001</td></tr>
-</table>
-
-The model output indicates a statistically significant negative effect of time (`Year_scaled`) on population counts, suggesting an overall decline in house sparrow populations over the study period. Specifically, the fixed effect of `Year_scaled` has an estimated coefficient of -0.066 (p < 0.001), which implies a decline rate of about 6.39% per year. In other words, each year, the expected house sparrow population decreases to approximately 93.61% of the population size from the previous year. 
-
-
-You may wonder how we calculated the decline rate of 6.39% from the coefficient of -0.066. This is because the model uses a Poisson distribution with a log link function. In such a model, the coefficients are on the log scale, meaning that to interpret the effect in terms of the original population counts, we must exponentiate the coefficient.
-
-Exponentiating the coefficient of -0.066 gives us approximately 0.9361, which corresponds to a 6.39% decline each year (1 - 0.9361 = 0.0639, or 6.39%). This means that, each year, the expected population of house sparrows decreases by about 6.39% relative to the previous year.
-
-------
-
-## Model Diagnostics: Checking Residuals
-To ensure the validity of our model, we’ll examine residuals to verify that model assumptions are met. Specifically, we’ll check for normality and homoscedasticity of the residuals.
-
-```r
-# Generate QQ plot for residuals to check for normality
-qqnorm(resid(sparrow.model))
-qqline(resid(sparrow.model))
-
-plot(sparrow.model, ylim = c(-20, 20), xlim = c(0, 100))  # Diagnostic plots for model fit
-```
-
-![alt text](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/figures/qqplot_residuals.png)
-
-![alt text](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/figures/diag_plot.png)
-
-The QQ plot and simulated residuals plot provide visual checks for any deviations from model assumptions. If the points on the QQ plot deviate substantially from the reference line, it may indicate non-normality of residuals. Simulated residuals provide a comprehensive diagnostic, highlighting any issues related to distributional assumptions or patterns that may need further examination or model adjustment.
-
-```r
-# Simulated residuals to check model assumptions
-sim_res <- simulateResiduals(sparrow.model)
-plot(sim_res)  # Displays QQ plots and additional diagnostics
-```
-We can now use the **DHARMa** (Diagnostics for Hierarchical (Multi-level / Mixed) Regression Models) package to evaluate model assumptions for our mixed-effects model. Unlike traditional residual diagnostics, which may be inadequate for complex hierarchical structures, DHARMa generates **simulated residuals** based on the model’s distribution (in this case, Poisson) to create standardized residuals.
-
-Using `plot(sim_res)`, DHARMa produces several diagnostic plots:
-
-- **QQ Plot:** Compares the distribution of simulated residuals to a uniform distribution, revealing any deviations from the expected pattern.
-- **Residual vs. Predicted Plot:** Checks for heteroscedasticity (changing variance) and model misspecification.
-- **Outlier Detection:** Identifies data points that do not fit the model well.
-- **Autocorrelation Checks:** For spatial or temporal data, these tests identify unmodeled correlations.
-  
-DHARMa diagnostics thus provide robust insights into the fit and assumptions of mixed models, addressing both distributional and hierarchical structures in the data.
-
-```r
-# Simulated residuals to check model assumptions
-sim_res <- simulateResiduals(sparrow.model)
-plot(sim_res)  # Displays QQ plots and additional diagnostics
-```
-![alt text](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/figures/DHARMa_diagnostic_plots.png)
-
-Here we can see, that these plots show possible issues with the model fit, but we will continue the anaysis as part of this tutorial anyway.
-
-----
-# Model Interpretation and Predictions
-
-With the mixed-effects model fitted, we can proceed to interpret the results and visualize population trends over time. We will also generate predictions to observe how house sparrow populations are projected to change, both overall and by country.
-
-## Visualizing Model Predictions with Confidence Intervals
-
-First, we create a visualization of the overall predicted trend over time, including a confidence interval to represent the uncertainty around our predictions.
-
-```r
-# Model predictions over time
-pred.mm <- ggpredict(sparrow.model, terms = c("Year_scaled"))
-
-# Plot overall predictions with confidence intervals
-(reg_line_plot <- ggplot(pred.mm) + 
-  geom_line(aes(x = x, y = predicted)) +
-  geom_ribbon(aes(x = x, ymin = predicted - std.error, ymax = predicted + std.error), fill = "lightgrey", alpha = 0.5) +
-  geom_point(data = house_sparrow_data, aes(x = Year_scaled, y = Population, colour = Country.list)) +
-  labs(x = "Year (scaled)", y = "Population Count", title = "House Sparrow Population Trends"))
-
-# Save the plot
-ggsave("figures/Overall_House_Sparrow_Population_Trends.png", plot = reg_line_plot, width = 8, height = 6)
-```
-![alt text](https://github.com/EdDataScienceEES/https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/figures/Overall_House_Sparrow_Population_Trends.png)
-
-This plot demonstrates the population trend over time for house sparrows, with the ribbon capturing the confidence interval. The negative trend indicates a decline in population, aligning with the model’s findings.
-
-However, it is hard to properly visualise the relationship in this figure due to the increased counts in some locations, namely Australia, making it difficult to see any relationship. To tackle this we display a second plot with an adjust axis for population count to illustrate the relationship more clearly.
-
-![alt text](https://github.com/EdDataScienceEES/challenge-3-RachelBrown03/blob/master/figures/Overall_House_Sparrow_Population_Trends_zoomed.png)
-
-## Predictions by Country
-
-To further understand regional differences, we can generate and visualize predictions by country. This allows us to see if trends differ across various geographic regions, possibly due to differing environmental pressures or conservation policies.
-
-```r
-# Predictions by Country with individual trends
-pred.mm1 <- ggpredict(sparrow.model, terms = c("Year_scaled", "Country.list"), type = "re")
-
-# Plot predictions by country
-(reg_by_country <- ggplot(pred.mm1) + 
-  geom_line(aes(x = x, y = predicted)) +
-  geom_ribbon(aes(x = x, ymin = predicted - std.error, ymax = predicted + std.error), fill = "lightgrey", alpha = 0.5) +
-  geom_point(data = house_sparrow_data, aes(x = Year_scaled, y = Population, colour = Country.list)) +
-  labs(x = "Year (scaled)", y = "Population Count", title = "House Sparrow Population Trends by Country"))
-ggsave("figures/House_Sparrow_Population_Trends_by_Country.png", plot = reg_by_country, width = 8, height = 6)
-```
-This plot provides a more granular view of trends within each country, offering insights into regional differences in population dynamics. Countries with steeper declines might indicate areas where targeted conservation efforts could be beneficial.
-
+You’ll notice that these measurements do not perfectly follow a normal distribution, with body mass being slightly skewed.
 
 ---
-# Conclusion
-In this tutorial, we:
+# Sampling Distributions
+{: #SamplingDist}
 
-- **Reshaped and cleaned the LPI dataset** to focus specifically on house sparrow populations.
-- **Conducted exploratory data analysis** to visualize the data and understand initial trends and patterns.
-- **Fitted a mixed-effects model** to assess the temporal and spatial variation in house sparrow populations, incorporating both fixed and random effects to capture hierarchical structure and account for sampling differences.
-- **Generated model diagnostics** to check assumptions and ensure model reliability.
-- **Produced visualizations of model predictions** to interpret the results and understand population trends, both overall and by country.
+The goal here is to illustrate how sampling distributions change with sample size.
 
-This workflow demonstrates a typical approach in ecological data science, allowing us to analyze trends and understand the factors influencing species population dynamics.
+## Generating Sampling Distributions
+{: #GenerateSamples}
 
-## Key Findings
-The analysis indicates a statistically significant overall decline in house sparrow populations over time, with an estimated annual decrease of approximately 6.39%. This suggests that factors affecting population viability—such as habitat loss or climate change—may be contributing to a sustained decline. Additionally, differences observed across countries highlight regional variability, pointing to the importance of tailored conservation strategies.
+We'll take random samples of different sizes (n = 10, 30, 50, and 100) from the `flipper_length_mm` variable and calculate the sample means. For each sample size, we’ll repeat the sampling 1000 times to create a distribution of sample means.
+
+```r
+# Function to generate sampling distributions
+generate_sampling_distribution <- function(data, sample_size, num_samples) {
+    sample_means <- replicate(num_samples, mean(sample(data$flipper_length_mm, sample_size, replace = TRUE), na.rm = TRUE))
+    return(sample_means)
+}
+
+# Generate sampling distributions for sample sizes of 10, 30, 50, and 100
+set.seed(42)
+samples_10 <- generate_sampling_distribution(penguins, 10, 1000)
+samples_30 <- generate_sampling_distribution(penguins, 30, 1000)
+samples_50 <- generate_sampling_distribution(penguins, 50, 1000)
+samples_100 <- generate_sampling_distribution(penguins, 100, 1000)
+```
+
+## Visualizing Sampling Distributions
+{: #Histograms}
+
+Using `ggplot2`, we’ll visualize these sampling distributions to see the CLT at work.
+
+```r
+# Combine sampling distributions into a data frame for visualization
+sample_data <- tibble(
+    Sample_Mean = c(samples_10, samples_30, samples_50, samples_100),
+    Sample_Size = factor(rep(c(10, 30, 50, 100), each = 1000))
+)
+
+# Plot the sampling distributions
+ggplot(sample_data, aes(x = Sample_Mean, fill = Sample_Size)) +
+    geom_histogram(position = "identity", alpha = 0.6, bins = 30) +
+    facet_wrap(~Sample_Size, scales = "free_y") +
+    labs(title = "Sampling Distributions of Mean Flipper Length",
+         x = "Sample Mean of Flipper Length (mm)",
+         y = "Frequency") +
+    theme_minimal() +
+    scale_fill_brewer(palette = "Set3")
+```
+
+Each facet shows the distribution of sample means for different sample sizes. As sample size increases, the distribution becomes more bell-shaped.
+
+---
+# Applying the Central Limit Theorem
+{: #CLT}
+
+## Effect of Sample Size on Distribution Shape
+{: #EffectSampleSize}
+
+Using these plots, you can see that as sample size grows, the shape of the sampling distribution converges towards a normal distribution.
+
+---
+# Summary and Interpretation
+{: #Summary}
+
+The Central Limit Theorem allows ecologists to make inferences about population means, even when data are skewed. For example, in estimating penguin population metrics across different regions, the CLT ensures that as sample sizes grow, the sampling distribution will approximate a normal distribution, allowing for the use of confidence intervals and hypothesis tests based on normality.
+
+This tutorial demonstrates how to leverage CLT to approximate normality in ecological data, facilitating robust statistical inferences.
+
+----
+
 
 ---
 
