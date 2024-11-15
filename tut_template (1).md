@@ -39,9 +39,9 @@ In this tutorial, we'll apply the **Central Limit Theorem (CLT)** to sample data
 
 The **Central Limit Theorem (CLT)** is fundamental in ecological studies, especially for analyzing population distributions where full population data collection is often impractical. The CLT states that the distribution of sample means approximates a normal distribution as sample size increases, even when the population distribution is not normal.
 
-In ecological and environmental studies, data often come in a wide variety of shapes, distributions, and sizes. When analyzing this data, we frequently rely on statistical models, many of which make assumptions about the underlying distribution of the data. For instance, linear models often assume that data are normally distributed to make accurate predictions. However, real-world ecological data rarely fits a perfect normal distribution; in fact, it is common for data to be skewed or follow complex, non-linear relationships that can’t be captured by standard linear models.
+In ecology, data often come from field observations of wildlife populations, which tend to be non-normal. However, many statistical tests assume normality, which raises a key question: **How can we work with data that doesn’t follow a normal distribution?** The CLT is crucial here because it allows us to make inferences using sample means, even if the original data are not normally distributed. By studying the CLT, we can understand the behavior of sample means and use this information in statistical modeling and hypothesis testing in ecology.
 
-To address these challenges, we use a powerful statistical concept known as the **Central Limit Theorem (CLT)**, which allows us to work with sample means and predict that their distribution will approximate a normal shape, regardless of the shape of the population data. This tutorial will guide you through understanding and applying the CLT in R, using ecological data to demonstrate how sampling and the CLT help us make reliable inferences, even when the data itself is not normally distributed.
+This tutorial will use the Palmer Penguins dataset, which contains data on three penguin species. We’ll focus on measurements like body mass and flipper length to see how sample means approximate a normal distribution, regardless of the underlying population shape.
 
 By the end of this tutorial, you will have a practical understanding of the Central Limit Theorem and how to apply it to data analysis, allowing you to draw meaningful insights from ecological data, even in situations where traditional assumptions do not hold.
 
@@ -100,20 +100,29 @@ head(penguins)
 Now that the dataset is loaded, you’re ready to dive into the tutorial and explore the Central Limit Theorem in action!
 
 ----
+# 4. Part I: Understanding the Central Limit Theorem
 
-Yo begin, let’s explore the dataset and focus on a variable that isn't normally distributed.
+The CLT states that if you take sufficiently large random samples from any population, the distribution of the sample means will approximate a normal distribution, even if the population itself is not normally distributed. Let’s see how this applies to our penguin data.
 
-## Inspecting Variable Distributions
-
-Using `flipper_length_mm`, which is typically skewed and varies by species, will allow us to see the CLT in action as we increase sample sizes.
+## Step 1: Explore the Distribution of the Population Data
+Before diving into the CLT, let’s examine the distribution of the original penguin body mass and flipper length measurements.
 
 ```r
-# Initial histogram to check distribution
-ggplot(penguins, aes(flipper_length_mm)) +
-    geom_histogram(bins = 20, fill = "#69b3a2", color = "white") +
-    labs(title = "Distribution of Flipper Length", x = "Flipper Length (mm)", y = "Frequency") +
-    theme_bw()
+# Remove rows with missing values for simplicity
+penguins_clean <- na.omit(penguins)
+
+# Plot the distributions of body mass and flipper length
+ggplot(penguins_clean, aes(x = body_mass_g)) +
+  geom_histogram(binwidth = 200, color = "black", fill = "skyblue") +
+  labs(title = "Distribution of Penguin Body Mass", x = "Body Mass (g)")
+
+ggplot(penguins_clean, aes(x = flipper_length_mm)) +
+  geom_histogram(binwidth = 5, color = "black", fill = "salmon") +
+  labs(title = "Distribution of Penguin Flipper Length", x = "Flipper Length (mm)")
+
 ```
+You’ll notice that these measurements do not perfectly follow a normal distribution, with body mass being slightly skewed.
+
 ---
 # Sampling Distributions
 {: #SamplingDist}
