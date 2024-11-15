@@ -12,7 +12,7 @@ To add images, replace `tutheaderbl1.png` with the file name of any image you up
 
 # Investigating The Central Limit Theorem
 
-In this tutorial, we'll apply the **Central Limit Theorem (CLT)** to sample data from the Palmer Penguins dataset, demonstrating how sampling distributions of the mean approach a normal distribution as sample size increases. This is useful for understanding how ecological data, even when skewed or not normally distributed, can be analyzed with the CLT. We'll focus on penguin flipper lengths as a non-normally distributed variable to illustrate the process.
+In this tutorial, we'll apply the **Central Limit Theorem (CLT)** to sample data from the Palmer Penguins dataset, demonstrating how sampling distributions of the mean approach a normal distribution as sample size increases. This is useful for understanding how ecological data, even when skewed or not normally distributed, can be analyzed with the CLT. We'll focus on penguin flipper lengths and body mass as non-normally distributed variables to illustrate the process.
 
 # Steps:
 
@@ -113,17 +113,14 @@ First we will remove the rows with missing values to make our data easier to wor
 # Remove rows with missing values for simplicity
 penguins_clean <- na.omit(penguins)
 ```
-Now we are ready to plot
+Now we are ready to plot, we will begin by looking at body mass.
 
 ```r
 # Plot the distributions of body mass and flipper length
 body_mass <- ggplot(penguins_clean, aes(x = body_mass_g)) +
   geom_histogram(binwidth = 200, color = "black", fill = "skyblue") +
-  labs(title = "Distribution of Penguin Body Mass", x = "Body Mass (g)")
-
-flipper_len <- ggplot(penguins_clean, aes(x = flipper_length_mm)) +
-  geom_histogram(binwidth = 5, color = "black", fill = "salmon") +
-  labs(title = "Distribution of Penguin Flipper Length", x = "Flipper Length (mm)")
+  labs(title = "Distribution of Penguin Body Mass", x = "Body Mass (g)") +
+theme_minimal()
 
 ```
 
@@ -133,6 +130,18 @@ We can save the figure and give it exact dimensions using `ggsave` from the `ggp
 ggsave("figures/body_mass.png", plot = sparrow_hist, width = 10, height = 5)
 ```
 ![alt text](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/figures/body_mass.png)
+
+We now will look at flipper length.
+
+```r
+flipper_len <- ggplot(penguins_clean, aes(x = flipper_length_mm)) +
+  geom_histogram(binwidth = 3, color = "black", fill = "salmon") +
+  labs(title = "Distribution of Penguin Flipper Length", x = "Flipper Length (mm)") +
+  theme_minimal()
+
+ggsave("figures/flipper_len.png", plot = flipper_len, width = 10, height = 5)
+```
+![alt text](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/figures/flipper_len.png)
 
 You’ll notice that these measurements do not perfectly follow a normal distribution, with body mass being slightly skewed.
 
