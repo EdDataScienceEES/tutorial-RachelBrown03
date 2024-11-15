@@ -107,20 +107,33 @@ The CLT states that if you take sufficiently large random samples from any popul
 ## Step 1: Explore the Distribution of the Population Data
 Before diving into the CLT, let’s examine the distribution of the original penguin body mass and flipper length measurements.
 
+First we will remove the rows with missing values to make our data easier to work with
+
 ```r
 # Remove rows with missing values for simplicity
 penguins_clean <- na.omit(penguins)
+```
+Now we are ready to plot
 
+```r
 # Plot the distributions of body mass and flipper length
-ggplot(penguins_clean, aes(x = body_mass_g)) +
+body_mass <- ggplot(penguins_clean, aes(x = body_mass_g)) +
   geom_histogram(binwidth = 200, color = "black", fill = "skyblue") +
   labs(title = "Distribution of Penguin Body Mass", x = "Body Mass (g)")
 
-ggplot(penguins_clean, aes(x = flipper_length_mm)) +
+flipper_len <- ggplot(penguins_clean, aes(x = flipper_length_mm)) +
   geom_histogram(binwidth = 5, color = "black", fill = "salmon") +
   labs(title = "Distribution of Penguin Flipper Length", x = "Flipper Length (mm)")
 
 ```
+
+We can save the figure and give it exact dimensions using `ggsave` from the `ggplot2` package. The file will be saved to wherever your working directory is, which you can check by running `getwd()` in the console.
+
+```r
+ggsave("figures/body_mass.png", plot = sparrow_hist, width = 10, height = 5)
+```
+![alt text](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/figures/body_mass.png)
+
 You’ll notice that these measurements do not perfectly follow a normal distribution, with body mass being slightly skewed.
 
 ---
