@@ -77,7 +77,7 @@ Let’s dive into how the Central Limit Theorem can simplify data analysis and a
 # 2. What is the Central Limit Theorem?
 {: #Overview}
 
-The **Central Limit Theorem (CLT)** is a key concept in statistics, relying on the idea of a **sampling distribution**. A sampling distribution is the probability distribution of a statistic — like the mean — calculated from a large number of samples taken from a population.
+The **Central Limit Theorem (CLT)** is a key concept in statistics, relying on the idea of a **sampling distribution**. A sampling distribution is the probability distribution of a statistic, like the mean, calculated from a large number of samples taken from a population.
 
 Imagining an experiment may help you to understand sampling distributions:
 
@@ -127,7 +127,7 @@ This notation may appear a bit daunting if your not familiar with maths but do n
 The **sample size ($n$)** influences the properties of the sampling distribution in two main ways:
 
 ### 1. **Sample Size and Normality**
-- **Small sample sizes ($n < 30$)**: The sampling distribution may not be normal and will resemble the shape of the population distribution. The CLT does not apply unless the population is normal.
+- **Small sample sizes ($n < 30$)**: The sampling distribution may not be normal and will resemble the shape of the population distribution.
 - **Large sample sizes ($n \geq 30$)**: The CLT applies, and the sampling distribution will approximate a normal distribution, regardless of the population’s distribution.
 
 ### 2. **Sample Size and Standard Deviations**
@@ -170,10 +170,11 @@ install.packages("palmerpenguins")
 # Load the package
 library(palmerpenguins)
 ```
-After loading the package, you can load and view the penguins dataset directly:
 
 ## Loading and Inspecting the Data
 {: #Load}
+
+After loading the package, you can load and view the penguins dataset directly:
 
 ```r
 # Load the penguins data
@@ -187,7 +188,7 @@ Now that the dataset is loaded, you’re ready to dive into the tutorial and exp
 ## Explore the Distribution of the Population Data
 {: #PopData}
 
-First, let’s examine the distribution of the original penguin body mass and flipper length measurements.
+Let’s begin by examining the distribution of the original penguin body mass and flipper length measurements.
 
 First we will remove the rows with missing values to make our data easier to work with
 
@@ -199,11 +200,11 @@ Now we are ready to plot, we will begin by looking at body mass.
 
 ```r
 # Plot the distributions of body mass and flipper length
-body_mass <- ggplot(penguins_clean, aes(x = body_mass_g)) +
+(body_mass <- ggplot(penguins_clean, aes(x = body_mass_g)) +
   geom_histogram(binwidth = 200, color = "black", fill = "skyblue") +
   labs(title = "Distribution of Penguin Body Mass", x = "Body Mass (g)") +
 theme_minimal()
-
+)
 ```
 
 We can save the figure and give it exact dimensions using `ggsave` from the `ggplot2` package. The file will be saved to wherever your working directory is, which you can check by running `getwd()` in the console.
@@ -213,25 +214,30 @@ ggsave("figures/body_mass.png", plot = sparrow_hist, width = 10, height = 5)
 ```
 ![alt text](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/figures/body_mass.png)
 
+Here we can see, the data appears skewed and does not follow the 'bell shaped curve' of the normal distribution.
+
+Note that putting your entire ggplot code in brackets () creates the graph and then shows it in the plot viewer. If you don’t have the brackets, you’ve only created the object, but haven’t visualised it. You would then have to call the object such that it will be displayed by just typing body_mass after you’ve created the “body_mass” object.
+
 We now will look at flipper length.
 
 ```r
-flipper_len <- ggplot(penguins_clean, aes(x = flipper_length_mm)) +
+(flipper_len <- ggplot(penguins_clean, aes(x = flipper_length_mm)) +
   geom_histogram(binwidth = 3, color = "black", fill = "salmon") +
   labs(title = "Distribution of Penguin Flipper Length", x = "Flipper Length (mm)") +
   theme_minimal()
+)
 
 ggsave("figures/flipper_len.png", plot = flipper_len, width = 10, height = 5)
 ```
 ![alt text](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/figures/flipper_len.png)
 
-You’ll notice that these measurements do not perfectly follow a normal distribution, with body mass being slightly skewed.
+Again we can see that these measurements do not perfectly follow a normal distribution.
 
 ---
 # 4. Sampling Distributions
 {: #SamplingDist}
 
-The goal here is to illustrate how sampling distributions change with sample size.
+The goal here is to illustrate how sampling distributions change with sample size, we will now focus on the body mass of the penguins.
 
 ## Setting the Seed for Reproducibility
 {: #Seed}
@@ -241,10 +247,11 @@ In statistical simulations, we often draw random samples from a population. To e
 ### What does `set.seed()` do?
 The `set.seed()` function in R initializes the random number generator. It allows us to "reproduce" random results, meaning that every time we run our code with the same seed, we will get the same sequence of random numbers or random samples. This is important because, without it, each time we run the simulation, the results would be different, making it difficult to compare outcomes across runs.
 
-For example, here we will set:
+For example, here we will use:
 ```r
 set.seed(123)
 ```
+
 ## Generating Sampling Distributions
 {: #Generating}
 
@@ -273,13 +280,17 @@ After generating the sample means, we can visualize the **sampling distribution*
 
 ```r
 # Plot the distribution of sample means
-ggplot(data.frame(sample_means = sample_means), aes(x = sample_means)) +
+(samplemean_plot <- ggplot(data.frame(sample_means = sample_means), aes(x = sample_means)) +
   geom_histogram(binwidth = 10, color = "black", fill = "lightgreen") +
   labs(title = "Sampling Distribution of Body Mass Means", x = "Mean Body Mass (g)", y = "Frequency") +
-theme_minimal()
+  theme_minimal()
+)
 
+ggsave("figures/samplemean_plot.png", plot = samplemean_plot, width = 10, height = 5)
 ```
 ![alt text](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/figures/samplemean_plot.png)
+
+Here we can see the distribution is looking much more similar to the normal distribution curve.
 
 ---
 # 5. Exploring Different Sample Sizes
@@ -292,7 +303,15 @@ Let’s extend the analysis by calculating the sampling distributions for differ
 calculate_sample_means <- function(size, n_samples = 1000) {
   replicate(n_samples, mean(sample(penguins_clean$body_mass_g, size, replace = TRUE)))
 }
-
+```
+-`calculate_sample_means` function: This custom function calculates sample means. It takes two arguments:
+   - `size`: The sample size (i.e., how many observations to include in each sample).
+   - `n_samples`: The number of samples to draw (default is 1000).
+- Inside the function:
+    - `sample()`: Randomly selects size observations from the penguins_clean$body_mass_g data with replacement (meaning the same observation can be selected multiple times in a sample).
+mean(): Calculates the mean (average) of the selected sample.
+replicate(): Repeats the sampling process n_samples times (1000 by default), creating a collection of sample means.
+```r
 # Calculate sample means for different sample sizes
 sample_means_10 <- calculate_sample_means(10)
 sample_means_50 <- calculate_sample_means(50)
