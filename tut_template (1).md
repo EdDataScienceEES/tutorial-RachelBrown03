@@ -1,15 +1,3 @@
-<center><img src="{{ site.baseurl }}/tutheaderbl.png" alt="Img"></center>
-
-To add images, replace `tutheaderbl1.png` with the file name of any image you upload to your GitHub repository.
-
-### Tutorial Aims
-
-#### <a href="#section1"> 1. The first section</a>
-
-#### <a href="#section2"> 2. The second section</a>
-
-#### <a href="#section3"> 3. The third section</a>
-
 # Investigating The Central Limit Theorem
 
 In this tutorial, we'll apply the **Central Limit Theorem (CLT)** to sample data from the Palmer Penguins dataset, demonstrating how sampling distributions of the mean approach a normal distribution as sample size increases. This is useful for understanding how ecological data, even when skewed or not normally distributed, can be analyzed with the CLT. We'll focus on penguin flipper lengths and body mass as non-normally distributed variables to illustrate the process.
@@ -304,33 +292,50 @@ calculate_sample_means <- function(size, n_samples = 1000) {
   replicate(n_samples, mean(sample(penguins_clean$body_mass_g, size, replace = TRUE)))
 }
 ```
--`calculate_sample_means` function: This custom function calculates sample means. It takes two arguments:
+- `calculate_sample_means` function: This custom function calculates sample means. It takes two arguments:
    - `size`: The sample size (i.e., how many observations to include in each sample).
    - `n_samples`: The number of samples to draw (default is 1000).
 - Inside the function:
-    - `sample()`: Randomly selects size observations from the penguins_clean$body_mass_g data with replacement (meaning the same observation can be selected multiple times in a sample).
-mean(): Calculates the mean (average) of the selected sample.
-replicate(): Repeats the sampling process n_samples times (1000 by default), creating a collection of sample means.
+    - `sample()`: Randomly selects `size` observations from the `penguins_clean$body_mass_g` data with replacement (meaning the same observation can be selected multiple times in a sample).
+    - `mean()`: Calculates the mean (average) of the selected sample.
+    - `replicate()`: Repeats the sampling process `n_samples` times (1000 by default), creating a collection of sample means.
+
+Next, we shall call the `calculate_sample_means` function three times with different sample sizes: 10, 50, and 100.
+
+For each sample size, the function will generate 1000 random samples, calculate the mean for each sample, and store these means in the corresponding variables: `sample_means_10`, `sample_means_50`, and `sample_means_100`.
+     
 ```r
 # Calculate sample means for different sample sizes
 sample_means_10 <- calculate_sample_means(10)
 sample_means_50 <- calculate_sample_means(50)
 sample_means_100 <- calculate_sample_means(100)
+```
 
+Now, we combine the sample means into a data frame.
+ - `sample_mean`: The collection of sample means (from `sample_means_10`, `sample_means_50`, and `sample_means_100`).
+ - `sample_size`: A factor (categorical variable) indicating the sample size for each corresponding mean. We use the `rep()` function to repeat the sample sizes 1000 times for each set of sample means.
+
+We then plot the distributions
+
+```r
 # Combine data and plot distributions
 sample_means_df <- data.frame(
   sample_mean = c(sample_means_10, sample_means_50, sample_means_100),
   sample_size = factor(rep(c(10, 50, 100), each = n_samples))
 )
 
-ggplot(sample_means_df, aes(x = sample_mean, fill = sample_size)) +
+(sampledist_plot <- ggplot(sample_means_df, aes(x = sample_mean, fill = sample_size)) +
   geom_histogram(binwidth = 50, color = "black", alpha = 0.6, position = "identity") +
   facet_wrap(~ sample_size) +
-  labs(title = "Sampling Distributions of Body Mass Means", x = "Mean Body Mass (g)", y = "Frequency") +
+  labs(title = "Sampling Distributions of Body Mass Means", x = "Mean Body Mass (g)", y = "Frequency")+
   theme_minimal()
+)
 
+ggsave("figures/sampledist_plot.png", plot = sampledist_plot, width = 10, height = 5)
 ```
 ![alt text](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/figures/sampledist_plot.png)
+
+Here we can see, with a smaller sample size (e.g., 10), the distribution of sample means might be more spread out and less normal in shape. As the sample size increases (e.g., 50 or 100), the sample means tend to cluster more tightly around the population mean, and the distribution becomes more bell-shaped and closer to normal, which aligns with the CLT.
 
 ## Adding Normal Distribution Curves
 {: #Normal}
@@ -359,9 +364,12 @@ normal_curves <- summary_stats %>%
   ) %>%
   unnest(cols = c(x, y))
 
-ggplot(sample_means_df, aes(x = sample_mean, fill = sample_size)) +
+# Plot the sampling distributions with normal overlays
+(curves_plot <- ggplot(sample_means_df, aes(x = sample_mean, fill = sample_size)) +
   geom_histogram(binwidth = 50, color = "black", alpha = 0.6) +
-  facet_wrap(~ sample_size) +
+  facet_wrap(~ sample_size, labeller = as_labeller(c("10" = "Sample Size: 10", 
+                                                     "50" = "Sample Size: 50", 
+                                                     "100" = "Sample Size: 100"))) +
   labs(
     title = "Sampling Distributions of Body Mass Means with Normal Distribution Overlay",
     x = "Mean Body Mass (g)", 
@@ -370,18 +378,19 @@ ggplot(sample_means_df, aes(x = sample_mean, fill = sample_size)) +
   theme_minimal() +
   geom_line(
     data = normal_curves,
-    aes(x = x, y = y * n_samples * 50, color = sample_size), # Scale y to match the histogram
+    aes(x = x, y = y * n_samples * 50, color = as.factor(sample_size)), # Scale y to match the histogram
     inherit.aes = FALSE,
     size = 1
   ) +
-  scale_color_manual(values = c("red", "blue", "green")) +
+  scale_color_manual(values = c("red", "green", "blue")) +
   theme(legend.position = "none")
+)
 
+ggsave("figures/curves_plot.png", plot = curves_plot, width = 10, height = 5)
 ```
 ![alt text](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/figures/curves_plot.png)
 
-You may be wondering
-Why More Bars for Sample Size 10?
+You may be wondering: Why More Bars for Sample Size 10?
  - **Bin Width and Range:** In this code, the `geom_histogram` uses a fixed bin width of `50`. For smaller sample sizes (e.g., 10), the spread (range) of the sample means is generally larger because smaller samples tend to vary more from the population mean.
     - As a result, more bins are needed to cover this wider range, leading to more bars.
 - **Narrower Range for Larger Samples:** For larger sample sizes (e.g., 100), the sample means cluster more tightly around the population mean, reducing the spread. Fewer bins are needed to cover the narrower range, resulting in fewer bars.
@@ -398,91 +407,11 @@ This tutorial demonstrates how to leverage CLT to approximate normality in ecolo
 # 7. Challenge
 {: #Challenge}
 
+Now that you've seen how the Central Limit Theorem works using the penguin dataset, it's time to apply your knowledge to a new challenge! Here’s your opportunity to experiment with sampling distributions using a different variable from the dataset.
+
+Experiment with increasing the number of samples (e.g., `change n_samples = 1000` to `n_samples = 5000`) and see how this affects the sampling distribution. Do you notice a change in the shape of the distribution as you increase the number of samples?
+
 ---
-
-You can read this text, then delete it and replace it with your text about your tutorial: what are the aims, what code do you need to achieve them?
----------------------------
-We are using `<a href="#section_number">text</a>` to create anchors within our text. For example, when you click on section one, the page will automatically go to where you have put `<a name="section_number"></a>`.
-
-To create subheadings, you can use `#`, e.g. `# Subheading 1` creates a subheading with a large font size. The more hashtags you add, the smaller the text becomes. If you want to make text bold, you can surround it with `__text__`, which creates __text__. For italics, use only one understore around the text, e.g. `_text_`, _text_.
-
-# Subheading 1
-## Subheading 2
-### Subheading 3
-
-This is some introductory text for your tutorial. Explain the skills that will be learned and why they are important. Set the tutorial in context.
-
-You can get all of the resources for this tutorial from <a href="https://github.com/ourcodingclub/CC-EAB-tut-ideas" target="_blank">this GitHub repository</a>. Clone and download the repo as a zip file, then unzip it.
-
-<a name="section1"></a>
-
-## 1. The first section
-
-
-At the beginning of your tutorial you can ask people to open `RStudio`, create a new script by clicking on `File/ New File/ R Script` set the working directory and load some packages, for example `ggplot2` and `dplyr`. You can surround package names, functions, actions ("File/ New...") and small chunks of code with backticks, which defines them as inline code blocks and makes them stand out among the text, e.g. `ggplot2`.
-
-When you have a larger chunk of code, you can paste the whole code in the `Markdown` document and add three backticks on the line before the code chunks starts and on the line after the code chunks ends. After the three backticks that go before your code chunk starts, you can specify in which language the code is written, in our case `R`.
-
-To find the backticks on your keyboard, look towards the top left corner on a Windows computer, perhaps just above `Tab` and before the number one key. On a Mac, look around the left `Shift` key. You can also just copy the backticks from below.
-
-```r
-# Set the working directory
-setwd("your_filepath")
-
-# Load packages
-library(ggplot2)
-library(dplyr)
-```
-
-<a name="section2"></a>
-
-## 2. The second section
-
-You can add more text and code, e.g.
-
-```r
-# Create fake data
-x_dat <- rnorm(n = 100, mean = 5, sd = 2)  # x data
-y_dat <- rnorm(n = 100, mean = 10, sd = 0.2)  # y data
-xy <- data.frame(x_dat, y_dat)  # combine into data frame
-```
-
-Here you can add some more text if you wish.
-
-```r
-xy_fil <- xy %>%  # Create object with the contents of `xy`
-	filter(x_dat < 7.5)  # Keep rows where `x_dat` is less than 7.5
-```
-
-And finally, plot the data:
-
-```r
-ggplot(data = xy_fil, aes(x = x_dat, y = y_dat)) +  # Select the data to use
-	geom_point() +  # Draw scatter points
-	geom_smooth(method = "loess")  # Draw a loess curve
-```
-
-At this point it would be a good idea to include an image of what the plot is meant to look like so students can check they've done it right. Replace `IMAGE_NAME.png` with your own image file:
-
-<center> <img src="{{ site.baseurl }}/IMAGE_NAME.png" alt="Img" style="width: 800px;"/> </center>
-
-<a name="section1"></a>
-
-## 3. The third section
-
-More text, code and images.
-
-This is the end of the tutorial. Summarise what the student has learned, possibly even with a list of learning outcomes. In this tutorial we learned:
-
-##### - how to generate fake bivariate data
-##### - how to create a scatterplot in ggplot2
-##### - some of the different plot methods in ggplot2
-
-We can also provide some useful links, include a contact form and a way to send feedback.
-
-For more on `ggplot2`, read the official <a href="https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf" target="_blank">ggplot2 cheatsheet</a>.
-
-Everything below this is footer material - text and links that appears at the end of all of your tutorials.
 
 <hr>
 <hr>
