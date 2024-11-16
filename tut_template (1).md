@@ -52,12 +52,7 @@ By the end of this tutorial, you will have a practical understanding of the Cent
 
 ## Prerequisites
 {: #Prerequisites}
-
-This tutorial is designed for beginners and intermediate learners in statistics and data analysis. Depending on your familiarity with statistical concepts, you may find different parts of the tutorial useful. If you’re new to the Central Limit Theorem, this tutorial will provide a solid introduction, while those with some statistical background will gain a deeper understanding of sampling distributions and practical applications of the CLT.
-
-To get the most out of this tutorial, a basic understanding of descriptive statistics (e.g., mean, variance) and probability will be helpful. Familiarity with linear models is also recommended, as we’ll discuss their assumptions briefly. Some knowledge of algebra, particularly with functions and basic manipulations, can enhance your understanding, but it’s not essential, no prior knowledge of advanced mathematics is required, as we’ll focus on applying concepts rather than complex math.
-
-The tutorial is structured around the `R` programming language, but the concepts apply across other statistical software as well. If you’re following along in `R`, you’ll benefit from a foundational understanding of data manipulation with `dplyr` and `tidyr` and basic data visualization with `ggplot2`. If these packages are new to you, consider reviewing introductory resources, as they will help you interpret and create visualizations of the data used in this tutorial.
+This tutorial is designed for learners with a basic understanding of statistics and data analysis. If you're familiar with concepts like the mean, variance, and probability distributions, you’ll find it easier to follow along. A working knowledge of R programming, particularly data manipulation (`dplyr`, `tidyr`) and visualization (`ggplot2`), will also enhance your experience.
 
 If you are new to any of these tools or want to refresh your skills, we recommend reviewing the following tutorials on the Coding Club website:
 
@@ -75,10 +70,79 @@ For this tutorial, we’ll be using the `palmerpenguins` dataset in R, which pro
 Let’s dive into how the Central Limit Theorem can simplify data analysis and allow us to derive meaningful insights from a wide range of ecological data!
 
 ----
+# What is the Central Limit Theorem?
+
+The **Central Limit Theorem (CLT)** is a key concept in statistics, relying on the idea of a **sampling distribution**. A sampling distribution is the probability distribution of a statistic — like the mean — calculated from a large number of samples taken from a population.
+
+Imagining an experiment may help you to understand sampling distributions:
+
+1. Draw a random sample from a population and calculate a statistic, such as the mean.
+2. Draw another random sample of the same size and calculate the mean again.
+3. Repeat this process many times to obtain a large number of means, one for each sample.
+
+The resulting distribution of these sample means is an example of a sampling distribution.
+
+The CLT states that:
+- The sampling distribution of the mean will **always** approximate a normal distribution as long as the sample size is large enough, regardless of the population’s distribution (e.g., normal, Poisson, binomial).
+- This applies even when the population distribution is non-normal.
+
+A **normal distribution** is a symmetrical, bell-shaped curve with most observations concentrated near the center.
+
+
+## Central Limit Theorem Formula
+
+Fortunately, you don’t need to repeatedly sample a population to understand the shape of the sampling distribution. The parameters of the sampling distribution of the mean can be determined directly from the population’s parameters:
+
+1. **Mean of the sampling distribution**:
+   $$\mu_{\bar{x}} = \mu$$
+
+   The mean of the sampling distribution ($\mu_{\bar{x}}$) is the same as the population mean ($\mu$).
+
+2. **Standard deviation of the sampling distribution**:
+   $$\sigma_{\bar{x}} = \dfrac{\sigma}{\sqrt{n}}$$
+
+   The standard deviation of the sampling distribution ($\sigma_{\bar{x}}$) is the population’s standard deviation ($\sigma$) divided by the square root of the sample size ($n$).
+
+3. **Sampling distribution notation**:
+   $$\bar{X} \sim N\left(\mu, \dfrac{\sigma}{\sqrt{n}}\right)$$
+
+   Where:
+   - $\bar{X}$ = sampling distribution of the sample mean.
+   - $N$ = normal distribution.
+   - $\mu$ = population mean.
+   - $\sigma$ = population standard deviation.
+   - $n$ = sample size.
+
+This notation may appear a bit daunting if your not familiar with maths but do not worry, keep following along and it will all soon make sense!
+
+## Sample Size and the Central Limit Theorem
+The **sample size ($n$)** influences the properties of the sampling distribution in two main ways:
+
+### 1. **Sample Size and Normality**
+- **Small sample sizes ($n < 30$)**: The sampling distribution may not be normal and will resemble the shape of the population distribution. The CLT does not apply unless the population is normal.
+- **Large sample sizes ($n \geq 30$)**: The CLT applies, and the sampling distribution will approximate a normal distribution, regardless of the population’s distribution.
+
+### 2. **Sample Size and Standard Deviations**
+- **Small $n$**: The standard deviation of the sampling distribution ($\sigma_{\bar{x}}$) is large, indicating greater variability in the sample means. This reflects imprecise estimates of the population mean.
+- **Large $n$**: The standard deviation of the sampling distribution is smaller, indicating less variability and more precise estimates of the population mean.
+
+## Conditions of the Central Limit Theorem
+For the CLT to hold, the following conditions must be met:
+1. **Sufficiently large sample size**: Typically, $n \geq 30$ is considered sufficient.
+2. **Independent and identically distributed (i.i.d.) random variables**: This is usually satisfied if the sampling is random.
+3. **Finite variance**: The population’s distribution must have finite variance.
+
+## Importance of the Central Limit Theorem
+The CLT is fundamental to statistical theory. The term "central" in its name highlights the theorem's importance in statistics.
+
+The key takeaway from the CLT is  is that statistical theories that apply to normal distributions can also be applied to many problems that involve non-normal distributions.
+
+----
 # Data Preparations
 {: #Preparations}
 
 To start off, open `RStudio`,  and create a new script by clicking on `File/ New File/ R Script`, and start writing your script with the help of this tutorial.
+
 ```r
 # Purpose of the script
 # Your name, date and email
@@ -103,13 +167,9 @@ head(penguins)
 ```
 Now that the dataset is loaded, you’re ready to dive into the tutorial and explore the Central Limit Theorem in action!
 
-----
-# 4. Part I: Understanding the Central Limit Theorem
-
-The CLT states that if you take sufficiently large random samples from any population, the distribution of the sample means will approximate a normal distribution, even if the population itself is not normally distributed. Let’s see how this applies to our penguin data.
-
+---
 ## Step 1: Explore the Distribution of the Population Data
-Before diving into the CLT, let’s examine the distribution of the original penguin body mass and flipper length measurements.
+First, let’s examine the distribution of the original penguin body mass and flipper length measurements.
 
 First we will remove the rows with missing values to make our data easier to work with
 
@@ -272,6 +332,11 @@ ggplot(sample_means_df, aes(x = sample_mean, fill = sample_size)) +
 ```
 ![alt text](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/figures/curves_plot.png)
 
+You may be wondering
+Why More Bars for Sample Size 10?
+ - **Bin Width and Range:** In this code, the `geom_histogram` uses a fixed bin width of `50`. For smaller sample sizes (e.g., 10), the spread (range) of the sample means is generally larger because smaller samples tend to vary more from the population mean.
+    - As a result, more bins are needed to cover this wider range, leading to more bars.
+- **Narrower Range for Larger Samples:** For larger sample sizes (e.g., 100), the sample means cluster more tightly around the population mean, reducing the spread. Fewer bins are needed to cover the narrower range, resulting in fewer bars.
 
 ---
 # Applying the Central Limit Theorem
