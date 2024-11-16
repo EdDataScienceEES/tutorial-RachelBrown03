@@ -14,6 +14,10 @@ To add images, replace `tutheaderbl1.png` with the file name of any image you up
 
 In this tutorial, we'll apply the **Central Limit Theorem (CLT)** to sample data from the Palmer Penguins dataset, demonstrating how sampling distributions of the mean approach a normal distribution as sample size increases. This is useful for understanding how ecological data, even when skewed or not normally distributed, can be analyzed with the CLT. We'll focus on penguin flipper lengths and body mass as non-normally distributed variables to illustrate the process.
 
+<p align="center">
+  <img src="https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/figures/penguins.webp" width="1000" height="600">
+</p>
+
 # Steps:
 
 1. [**Introduction**](#intro)
@@ -151,50 +155,123 @@ You’ll notice that these measurements do not perfectly follow a normal distrib
 
 The goal here is to illustrate how sampling distributions change with sample size.
 
-## Generating Sampling Distributions
-{: #GenerateSamples}
+## Setting the Seed for Reproducibility
+In statistical simulations, we often draw random samples from a population. To ensure that our results are reproducible (i.e., we get the same results if we run the code multiple times), we set the seed using `set.seed()`.
 
-We'll take random samples of different sizes (n = 10, 30, 50, and 100) from the `flipper_length_mm` variable and calculate the sample means. For each sample size, we’ll repeat the sampling 1000 times to create a distribution of sample means.
+### What does `set.seed()` do?
+The `set.seed()` function in R initializes the random number generator. It allows us to "reproduce" random results, meaning that every time we run our code with the same seed, we will get the same sequence of random numbers or random samples. This is important because, without it, each time we run the simulation, the results would be different, making it difficult to compare outcomes across runs.
+
+For example, here we will set:
+```r
+set.seed(123)
+```
+## Generating Sampling Distributions
+Now, let’s simulate sampling distributions of body mass means by drawing random samples from the penguins' data. We’ll create samples of different sizes and calculate the mean of each sample.
 
 ```r
-# Function to generate sampling distributions
-generate_sampling_distribution <- function(data, sample_size, num_samples) {
-    sample_means <- replicate(num_samples, mean(sample(data$flipper_length_mm, sample_size, replace = TRUE), na.rm = TRUE))
-    return(sample_means)
+# Set parameters for simulation
+n_samples <- 1000  # Number of samples to draw
+sample_size <- 30  # Number of observations in each sample
+
+# Draw samples and calculate sample means
+sample_means <- replicate(n_samples, {
+  sample_mean <- mean(sample(penguins_clean$body_mass_g, sample_size, replace = TRUE))
+  return(sample_mean)
+})
+```
+In this code, we are:
+
+- Drawing 1000 samples (`n_samples`), each with 30 observations (`sample_size`).
+- The `replace = TRUE` argument means we allow **sampling with replacement**, so the same observation could appear in multiple samples.
+
+# Visualizing the Sampling Distribution
+After generating the sample means, we can visualize the **sampling distribution** (i.e., the distribution of the sample means). The Central Limit Theorem tells us that as the sample size increases, the sampling distribution will tend to become more **normal**, even if the original data is not normally distributed.
+
+```r
+# Plot the distribution of sample means
+ggplot(data.frame(sample_means = sample_means), aes(x = sample_means)) +
+  geom_histogram(binwidth = 10, color = "black", fill = "lightgreen") +
+  labs(title = "Sampling Distribution of Body Mass Means", x = "Mean Body Mass (g)", y = "Frequency") +
+theme_minimal()
+
+```
+![alt text](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/figures/samplemean_plot.png)
+
+# Exploring Different Sample Sizes
+Let’s extend the analysis by calculating the sampling distributions for different sample sizes (e.g., 10, 50, 100). We’ll compare how the distribution of sample means behaves as the sample size increases.
+
+```r
+# Function to calculate sample means for different sample sizes
+calculate_sample_means <- function(size, n_samples = 1000) {
+  replicate(n_samples, mean(sample(penguins_clean$body_mass_g, size, replace = TRUE)))
 }
 
-# Generate sampling distributions for sample sizes of 10, 30, 50, and 100
-set.seed(42)
-samples_10 <- generate_sampling_distribution(penguins, 10, 1000)
-samples_30 <- generate_sampling_distribution(penguins, 30, 1000)
-samples_50 <- generate_sampling_distribution(penguins, 50, 1000)
-samples_100 <- generate_sampling_distribution(penguins, 100, 1000)
-```
+# Calculate sample means for different sample sizes
+sample_means_10 <- calculate_sample_means(10)
+sample_means_50 <- calculate_sample_means(50)
+sample_means_100 <- calculate_sample_means(100)
 
-## Visualizing Sampling Distributions
-{: #Histograms}
-
-Using `ggplot2`, we’ll visualize these sampling distributions to see the CLT at work.
-
-```r
-# Combine sampling distributions into a data frame for visualization
-sample_data <- tibble(
-    Sample_Mean = c(samples_10, samples_30, samples_50, samples_100),
-    Sample_Size = factor(rep(c(10, 30, 50, 100), each = 1000))
+# Combine data and plot distributions
+sample_means_df <- data.frame(
+  sample_mean = c(sample_means_10, sample_means_50, sample_means_100),
+  sample_size = factor(rep(c(10, 50, 100), each = n_samples))
 )
 
-# Plot the sampling distributions
-ggplot(sample_data, aes(x = Sample_Mean, fill = Sample_Size)) +
-    geom_histogram(position = "identity", alpha = 0.6, bins = 30) +
-    facet_wrap(~Sample_Size, scales = "free_y") +
-    labs(title = "Sampling Distributions of Mean Flipper Length",
-         x = "Sample Mean of Flipper Length (mm)",
-         y = "Frequency") +
-    theme_minimal() +
-    scale_fill_brewer(palette = "Set3")
-```
+ggplot(sample_means_df, aes(x = sample_mean, fill = sample_size)) +
+  geom_histogram(binwidth = 50, color = "black", alpha = 0.6, position = "identity") +
+  facet_wrap(~ sample_size) +
+  labs(title = "Sampling Distributions of Body Mass Means", x = "Mean Body Mass (g)", y = "Frequency") +
+  theme_minimal()
 
-Each facet shows the distribution of sample means for different sample sizes. As sample size increases, the distribution becomes more bell-shaped.
+```
+![alt text](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/figures/sampledist_plot.png)
+
+# Adding Normal Distribution Curves
+Now, let's add a **normal distribution curve** to the plot to visually compare how well the sample means approximate a normal distribution. The normal curve will be based on the mean and standard deviation of the sample means.
+
+```r
+# Calculate summary statistics for each sample size
+summary_stats <- sample_means_df %>%
+  group_by(sample_size) %>%
+  summarize(
+    mean = mean(sample_mean),
+    sd = sd(sample_mean)
+  )
+
+# Add normal distribution curves to the plot
+normal_curves <- summary_stats %>%
+  rowwise() %>%
+  mutate(
+    x = list(seq(
+      min(sample_means_df$sample_mean), 
+      max(sample_means_df$sample_mean), 
+      length.out = 100
+    )),
+    y = list(dnorm(x, mean, sd))
+  ) %>%
+  unnest(cols = c(x, y))
+
+ggplot(sample_means_df, aes(x = sample_mean, fill = sample_size)) +
+  geom_histogram(binwidth = 50, color = "black", alpha = 0.6) +
+  facet_wrap(~ sample_size) +
+  labs(
+    title = "Sampling Distributions of Body Mass Means with Normal Distribution Overlay",
+    x = "Mean Body Mass (g)", 
+    y = "Frequency"
+  ) +
+  theme_minimal() +
+  geom_line(
+    data = normal_curves,
+    aes(x = x, y = y * n_samples * 50, color = sample_size), # Scale y to match the histogram
+    inherit.aes = FALSE,
+    size = 1
+  ) +
+  scale_color_manual(values = c("red", "blue", "green")) +
+  theme(legend.position = "none")
+
+```
+![alt text](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/figures/curves_plot.png)
+
 
 ---
 # Applying the Central Limit Theorem
