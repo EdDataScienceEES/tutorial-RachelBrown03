@@ -69,6 +69,8 @@ sampledist_plot <- ggplot(sample_means_df, aes(x = sample_mean, fill = sample_si
 
 ggsave("figures/sampledist_plot.png", plot = sampledist_plot, width = 10, height = 5)
 
+
+
 # Calculate summary statistics for each sample size
 summary_stats <- sample_means_df %>%
   group_by(sample_size) %>%
@@ -77,7 +79,7 @@ summary_stats <- sample_means_df %>%
     sd = sd(sample_mean)
   )
 
-# Calculate normal distribution curves for each sample size
+# Add normal distribution curves to the plot
 normal_curves <- summary_stats %>%
   rowwise() %>%
   mutate(
@@ -90,19 +92,21 @@ normal_curves <- summary_stats %>%
   ) %>%
   unnest(cols = c(x, y))
 
-# Plot the histograms with normal distribution curves
+# Plot the sampling distributions with normal overlays
 curves_plot <- ggplot(sample_means_df, aes(x = sample_mean, fill = sample_size)) +
   geom_histogram(binwidth = 50, color = "black", alpha = 0.6) +
-  facet_wrap(~ sample_size) +
+  facet_wrap(~ sample_size, labeller = as_labeller(c("10" = "Sample Size: 10", 
+                                                     "50" = "Sample Size: 50", 
+                                                     "100" = "Sample Size: 100"))) +
   labs(
     title = "Sampling Distributions of Body Mass Means with Normal Distribution Overlay",
-    x = "Mean Body Mass (g)",
+    x = "Mean Body Mass (g)", 
     y = "Frequency"
   ) +
   theme_minimal() +
   geom_line(
     data = normal_curves,
-    aes(x = x, y = y * n_samples * 50, color = sample_size), # Scale y to match the histogram
+    aes(x = x, y = y * n_samples * 50, color = as.factor(sample_size)), # Scale y to match the histogram
     inherit.aes = FALSE,
     size = 1
   ) +
