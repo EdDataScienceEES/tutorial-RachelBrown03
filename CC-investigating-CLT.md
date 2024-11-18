@@ -67,7 +67,7 @@ Once you’ve reviewed these foundational skills, you’ll be ready to dive into
 
 For this tutorial, we’ll be using the `palmerpenguins` dataset in R, which provides ecological data on penguins’ physical characteristics. If you’d like to follow along, install the `palmerpenguins` package and load the data using R. Throughout the tutorial, we’ll explore sampling distributions of penguin flipper lengths to see how the Central Limit Theorem helps us understand and interpret sample-based measurements from a larger population.
 
-Let’s dive into how the Central Limit Theorem can simplify data analysis and allow us to derive meaningful insights from a wide range of ecological data!
+Let’s dive into the Central Limit Theorem and how it works!
 
 ----
 # 2. What is the Central Limit Theorem?
@@ -83,29 +83,19 @@ Imagining an experiment may help you to understand sampling distributions:
 
 The resulting distribution of these sample means is an example of a sampling distribution.
 
-The CLT states that:
+The **CLT** states that:
 - The sampling distribution of the mean will **always** approximate a normal distribution as long as the sample size is large enough, regardless of the population’s distribution (e.g., normal, Poisson, binomial).
 - This applies even when the population distribution is non-normal.
 
 A **normal distribution** is a symmetrical, bell-shaped curve with most observations concentrated near the center.
 
+![alt text](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/figures/Normal%20Curve.png)
 
 ## Central Limit Theorem Formula
 {: #Formula}
 
-Fortunately, you don’t need to repeatedly sample a population to understand the shape of the sampling distribution. The parameters of the sampling distribution of the mean can be determined directly from the population’s parameters:
-
-1. **Mean of the sampling distribution**:
-   $$\mu_{\bar{x}} = \mu$$
-
-   The mean of the sampling distribution ($\mu_{\bar{x}}$) is the same as the population mean ($\mu$).
-
-2. **Standard deviation of the sampling distribution**:
-   $$\sigma_{\bar{x}} = \dfrac{\sigma}{\sqrt{n}}$$
-
-   The standard deviation of the sampling distribution ($\sigma_{\bar{x}}$) is the population’s standard deviation ($\sigma$) divided by the square root of the sample size ($n$).
-
-3. **Sampling distribution notation**:
+Fortunately, you don’t need to repeatedly sample a population to understand the shape of the sampling distribution. The parameters of the sampling distribution of the mean can be determined directly from the population’s parameters. Therefore, we can describe the sampling distribution of the mean using the following notation:
+ 
    $$\bar{X} \sim N\left(\mu, \dfrac{\sigma}{\sqrt{n}}\right)$$
 
    Where:
@@ -143,7 +133,7 @@ For the CLT to hold, the following conditions must be met:
 ## Importance of the Central Limit Theorem
 {: #Importance}
 
-The CLT is fundamental to statistical theory. The term "central" in its name highlights the theorem's importance in statistics.
+The CLT is fundamental to statistical theory. The term "**central**" in its name highlights the theorem's importance in statistics.
 
 The key takeaway from the CLT is  is that statistical theories that apply to normal distributions can also be applied to many problems that involve non-normal distributions.
 
@@ -163,8 +153,11 @@ setwd("~/Downloads/CC-intro-to-CLT")
 # Install the package (if not already installed)
 install.packages("palmerpenguins")
 
-# Load the package
+# Load the package and other necessary libraries
 library(palmerpenguins)
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
 ```
 
 ## Loading and Inspecting the Data
@@ -181,6 +174,8 @@ head(penguins)
 ```
 Now that the dataset is loaded, you’re ready to dive into the tutorial and explore the Central Limit Theorem in action!
 
+![alt text](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/figures/penguins%20peering.jpeg)
+
 ## Explore the Distribution of the Population Data
 {: #PopData}
 
@@ -192,7 +187,7 @@ First we will remove the rows with missing values to make our data easier to wor
 # Remove rows with missing values for simplicity
 penguins_clean <- na.omit(penguins)
 ```
-Now we are ready to plot, we will begin by looking at body mass.
+Now we are ready to plot, we will begin by looking at penguins' body mass, `body_mass_g` in the dataset.
 
 ```r
 # Plot the distributions of body mass and flipper length
@@ -210,7 +205,7 @@ ggsave("figures/body_mass.png", plot = sparrow_hist, width = 10, height = 5)
 ```
 ![alt text](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/figures/body_mass.png)
 
-Here we can see, the data appears skewed and does not follow the 'bell shaped curve' of the normal distribution.
+Here we can see, the data appears **skewed** and does not follow the 'bell shaped curve' of the normal distribution.
 
 Note that putting your entire ggplot code in brackets () creates the graph and then shows it in the plot viewer. If you don’t have the brackets, you’ve only created the object, but haven’t visualised it. You would then have to call the object such that it will be displayed by just typing body_mass after you’ve created the “body_mass” object.
 
@@ -227,13 +222,13 @@ ggsave("figures/flipper_len.png", plot = flipper_len, width = 10, height = 5)
 ```
 ![alt text](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/figures/flipper_len.png)
 
-Again we can see that these measurements do not perfectly follow a normal distribution.
+Again we can see that these measurements do not perfectly follow a normal distribution, so we must turn to the CLT.
 
 ---
 # 4. Sampling Distributions
 {: #SamplingDist}
 
-The goal here is to illustrate how sampling distributions change with sample size, we will now focus on the body mass of the penguins.
+The goal of this section is to demonstrate how sampling distributions evolve as sample size changes. To illustrate this concept clearly, we will focus exclusively on the body mass of the penguins.
 
 ## Setting the Seed for Reproducibility
 {: #Seed}
@@ -288,6 +283,8 @@ ggsave("figures/samplemean_plot.png", plot = samplemean_plot, width = 10, height
 
 Here we can see the distribution is looking much more similar to the normal distribution curve.
 
+This plot highlights the Central Limit Theorem in action: the sample means form a distribution that closely approximates a normal distribution, demonstrating the key idea that the sampling distribution of the mean tends to normality, even when the original data may not be normally distributed.
+
 ---
 # 5. Exploring Different Sample Sizes
 {: #Explore}
@@ -300,6 +297,8 @@ calculate_sample_means <- function(size, n_samples = 1000) {
   replicate(n_samples, mean(sample(penguins_clean$body_mass_g, size, replace = TRUE)))
 }
 ```
+You may be wondering, **what is this code doing?**
+
 - `calculate_sample_means` function: This custom function calculates sample means. It takes two arguments:
    - `size`: The sample size (i.e., how many observations to include in each sample).
    - `n_samples`: The number of samples to draw (default is 1000).
@@ -323,7 +322,7 @@ Now, we combine the sample means into a data frame.
  - `sample_mean`: The collection of sample means (from `sample_means_10`, `sample_means_50`, and `sample_means_100`).
  - `sample_size`: A factor (categorical variable) indicating the sample size for each corresponding mean. We use the `rep()` function to repeat the sample sizes 1000 times for each set of sample means.
 
-We then plot the distributions
+We then plot the distributions.
 
 ```r
 # Combine data and plot distributions
@@ -399,23 +398,20 @@ ggsave("figures/curves_plot.png", plot = curves_plot, width = 10, height = 5)
 ![alt text](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/figures/curves_plot.png)
 
 You may be wondering: Why More Bars for Sample Size 10?
- - **Bin Width and Range:** In this code, the `geom_histogram` uses a fixed bin width of `50`. For smaller sample sizes (e.g., 10), the spread (range) of the sample means is generally larger because smaller samples tend to vary more from the population mean.
-    - As a result, more bins are needed to cover this wider range, leading to more bars.
+ - **Bin Width and Range:** In this code, the `geom_histogram` uses a fixed bin width of `50`. For smaller sample sizes (e.g., 10), the spread (range) of the sample means is generally larger because smaller samples tend to vary more from the population mean. As a result, more bins are needed to cover this wider range, leading to more bars.
 - **Narrower Range for Larger Samples:** For larger sample sizes (e.g., 100), the sample means cluster more tightly around the population mean, reducing the spread. Fewer bins are needed to cover the narrower range, resulting in fewer bars.
 
 ---
 # 6. Summary and Interpretation
 {: #Summary}
 
-The Central Limit Theorem allows ecologists to make inferences about population means, even when data are skewed. For example, in estimating penguin population metrics across different regions, the CLT ensures that as sample sizes grow, the sampling distribution will approximate a normal distribution, allowing for the use of confidence intervals and hypothesis tests based on normality.
-
-This tutorial demonstrates how to leverage CLT to approximate normality in ecological data, facilitating robust statistical inferences.
+Congratulations, you've made it to the end of this tutorial! The Central Limit Theorem (CLT) is a valuable tool for ecologists working with real-world data, which is often skewed or irregular. In this tutorial, you’ve seen how the CLT helps approximate normality in sampling distributions, making it easier to apply statistical methods like confidence intervals and hypothesis tests. With this knowledge, you can confidently analyze population metrics, such as penguin body mass, and make reliable inferences even when the data isn’t perfectly shaped.
 
 ----
 # 7. Challenge
 {: #Challenge}
 
-Now that you've seen how the Central Limit Theorem works using the penguin dataset, it's time to apply your knowledge to a new challenge! Here’s your opportunity to experiment with sampling distributions using a different variable from the dataset.
+Now that you've seen how the Central Limit Theorem works using the penguin dataset, it's time to apply your knowledge to a new challenge! Here’s your opportunity to experiment with sampling distributions using a different variable from the dataset, such as flipper length, which we observed earlier is not normally distributed.
 
 Experiment with increasing the number of samples (e.g., `change n_samples = 1000` to `n_samples = 5000`) and see how this affects the sampling distribution. Do you notice a change in the shape of the distribution as you increase the number of samples?
 
