@@ -2,7 +2,11 @@
 
 In this tutorial, we'll apply the **Central Limit Theorem (CLT)** to sample data from the Palmer Penguins dataset, demonstrating how sampling distributions of the mean approach a normal distribution as sample size increases. This is useful for understanding how ecological data, even when skewed or not normally distributed, can be analyzed with the CLT. We'll focus on penguin flipper lengths and body mass as non-normally distributed variables to illustrate the process.
 
-<center><img src="{{ site.baseurl }}/Images/penguins.webp" alt="Img" width="1000" height = "600></center>
+<p align="center">
+  <img src="https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/Images/penguins.webp" width="1000" height="600">
+</p>
+
+<center><img src="{{ site.baseurl }}/Images/penguins%20peering.jpeg" alt="Img" width="1000" height = "600></center>
 
 # Steps:
 
