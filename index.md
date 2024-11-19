@@ -79,7 +79,7 @@ The **CLT** states that:
 
 A **normal distribution** is a symmetrical, bell-shaped curve with most observations concentrated near the center.
 
-<center><img src="{{ site.baseurl }}/figures/Normal%20Curve.png" alt="Img" width="250"></center>
+<center><img src="{{ site.baseurl }}/figures/Normal%20Curve.png" alt="Img"></center>
 
 
 ## Central Limit Theorem Formula
@@ -165,6 +165,8 @@ head(penguins)
 ```
 Now that the dataset is loaded, you’re ready to dive into the tutorial and explore the Central Limit Theorem in action!
 
+<center><img src="{{ site.baseurl }}/Images/penguins%20peering.jpeg" alt="Img"></center>
+
 ![alt text](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/Images/penguins%20peering.jpeg)
 
 ## Explore the Distribution of the Population Data
@@ -194,6 +196,9 @@ We can save the figure and give it exact dimensions using `ggsave` from the `ggp
 ```r
 ggsave("figures/body_mass.png", plot = sparrow_hist, width = 10, height = 5)
 ```
+
+<center><img src="{{ site.baseurl }}/figures/body_mass.png" alt="Img"></center>
+
 ![alt text](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/figures/body_mass.png)
 
 Here we can see, the data appears **skewed** and does not follow the 'bell shaped curve' of the normal distribution.
