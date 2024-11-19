@@ -7,7 +7,7 @@
         tex2jax: {
             inlineMath: [['$', '$'], ['\\(', '\\)']]  // This ensures inline math is rendered
         }
-    });
+    });
 </script>
 
 # Investigating The Central Limit Theorem
