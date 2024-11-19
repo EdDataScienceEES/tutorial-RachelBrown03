@@ -2,7 +2,7 @@
 
 In this tutorial, we'll apply the **Central Limit Theorem (CLT)** to sample data from the Palmer Penguins dataset, demonstrating how sampling distributions of the mean approach a normal distribution as sample size increases. This is useful for understanding how ecological data, even when skewed or not normally distributed, can be analyzed with the CLT. We'll focus on penguin flipper lengths and body mass as non-normally distributed variables to illustrate the process.
 
-<center><img src="{{ site.baseurl }}/Images/penguins.webp" alt="Img" width="1000" height = "600"></center>
+<center><img src="{{ site.baseurl }}/Images/penguins.webp" alt="Img" width="500" height = "300"></center>
 
 # Steps:
 
@@ -197,8 +197,6 @@ ggsave("figures/body_mass.png", plot = sparrow_hist, width = 10, height = 5)
 
 <center><img src="{{ site.baseurl }}/figures/body_mass.png" alt="Img"></center>
 
-![alt text](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/figures/body_mass.png)
-
 Here we can see, the data appears **skewed** and does not follow the 'bell shaped curve' of the normal distribution.
 
 Note that putting your entire ggplot code in brackets () creates the graph and then shows it in the plot viewer. If you don’t have the brackets, you’ve only created the object, but haven’t visualised it. You would then have to call the object such that it will be displayed by just typing body_mass after you’ve created the “body_mass” object.
@@ -214,7 +212,7 @@ We now will look at flipper length.
 
 ggsave("figures/flipper_len.png", plot = flipper_len, width = 10, height = 5)
 ```
-![alt text](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/figures/flipper_len.png)
+<center><img src="{{ site.baseurl }}/figures/flipper_len.png" alt="Img"></center>
 
 Again we can see that these measurements do not perfectly follow a normal distribution, so we must turn to the CLT.
 
@@ -273,7 +271,7 @@ After generating the sample means, we can visualize the **sampling distribution*
 
 ggsave("figures/samplemean_plot.png", plot = samplemean_plot, width = 10, height = 5)
 ```
-![alt text](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/figures/samplemean_plot.png)
+<center><img src="{{ site.baseurl }}/figures/samplemean_plot.png" alt="Img"></center>
 
 Here we can see the distribution is looking much more similar to the normal distribution curve.
 
@@ -334,7 +332,7 @@ sample_means_df <- data.frame(
 
 ggsave("figures/sampledist_plot.png", plot = sampledist_plot, width = 10, height = 5)
 ```
-![alt text](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/figures/sampledist_plot.png)
+<center><img src="{{ site.baseurl }}/figures/sampledist_plot.png" alt="Img"></center>
 
 Here we can see, with a smaller sample size (e.g., 10), the distribution of sample means might be more spread out and less normal in shape. As the sample size increases (e.g., 50 or 100), the sample means tend to cluster more tightly around the population mean, and the distribution becomes more bell-shaped and closer to normal, which aligns with the CLT.
 
@@ -389,7 +387,7 @@ normal_curves <- summary_stats %>%
 
 ggsave("figures/curves_plot.png", plot = curves_plot, width = 10, height = 5)
 ```
-![alt text](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/figures/curves_plot.png)
+<center><img src="{{ site.baseurl }}/figures/curves_plot.png" alt="Img"></center>
 
 You may be wondering: Why More Bars for Sample Size 10?
  - **Bin Width and Range:** In this code, the `geom_histogram` uses a fixed bin width of `50`. For smaller sample sizes (e.g., 10), the spread (range) of the sample means is generally larger because smaller samples tend to vary more from the population mean. As a result, more bins are needed to cover this wider range, leading to more bars.
