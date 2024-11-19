@@ -1,7 +1,3 @@
-<script type="text/javascript" async
-    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
-</script>
-
 <script type="text/javascript">
     MathJax.Hub.Config({
         tex2jax: {
@@ -9,7 +5,6 @@
         }
     });
 </script>
-
 
 # Investigating The Central Limit Theorem
 
@@ -109,21 +104,7 @@ Fortunately, you don’t need to repeatedly sample a population to understand th
    - $n$ = sample size.
 
 This notation may appear a bit daunting if your not familiar with maths but do not worry, keep following along and it will all soon make sense!
-<body>
-    <p>
-        $$\bar{X} \sim N\left(\mu, \dfrac{\sigma}{\sqrt{n}}\right)$$
-    </p>
-    <p>Where:</p>
-    <ul>
-        <li><i>$\bar{X}$</i> = sampling distribution of the sample mean.</li>
-        <li><i>N</i> = normal distribution.</li>
-        <li><i>&#x03BC;</i> = population mean.</li>
-        <li><i>&#x03C3;</i> = population standard deviation.</li>
-        <li><i>n</i> = sample size.</li>
-    </ul>
-</body>
-
-
+   
 ## Sample Size and the Central Limit Theorem
 {: #Size}
 
