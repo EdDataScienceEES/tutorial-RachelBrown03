@@ -10,6 +10,14 @@
     });
 </script>
 
+---
+layout: tutorial
+title: Transforming and scaling data
+subtitle: Understand the fundamental concepts of manipulating data distributions for modelling and visualization
+date: 2022-04-04 12:00:00
+author: Matus Seci
+tags: modelling
+---
 
 # Investigating The Central Limit Theorem
 
