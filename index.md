@@ -6,7 +6,7 @@ In this tutorial, we'll apply the **Central Limit Theorem (CLT)** to sample data
   <img src="https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/Images/penguins.webp" width="1000" height="600">
 </p>
 
-<center><img src="{{ site.baseurl }}/Images/penguins%20peering.jpeg" alt="Img" width="1000" height = "600></center>
+<center><img src="{{ site.baseurl }}/Images/penguins%20peering.jpeg" alt="Img" width="1000" height = "600"></center>
 
 # Steps:
 
