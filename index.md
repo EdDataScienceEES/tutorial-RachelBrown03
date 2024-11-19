@@ -79,7 +79,7 @@ The **CLT** states that:
 
 A **normal distribution** is a symmetrical, bell-shaped curve with most observations concentrated near the center.
 
-<center><img src="{{ site.baseurl }}/figures/Normal_Curve.png" alt="Img"></center>
+<center><img src="{{ site.baseurl }}/Images/Normal_Curve.png" alt="Img"></center>
 
 ## Central Limit Theorem Formula
 {: #Formula}
@@ -164,7 +164,7 @@ head(penguins)
 ```
 Now that the dataset is loaded, you’re ready to dive into the tutorial and explore the Central Limit Theorem in action!
 
-<center><img src="{{ site.baseurl }}/Images/penguins%20peering.jpeg" alt="Img"></center>
+<left><img src="{{ site.baseurl }}/Images/penguins%20peering.jpeg" alt="Img"></left>
 
 
 ## Explore the Distribution of the Population Data
