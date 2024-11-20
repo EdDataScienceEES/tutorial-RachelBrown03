@@ -1,7 +1,7 @@
 ---
 layout: page
 title: "Tutorials"
-banner: "../Images/slider-bg-pale.jpg"
+banner: "{{ site.baseurl }}/Images/slider-bg-pale.jpg"
 redirect_from:
   - /tutorials/
 ---
