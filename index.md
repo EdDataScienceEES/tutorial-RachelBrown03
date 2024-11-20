@@ -1,3 +1,12 @@
+---
+layout: page
+title: "Tutorials"
+banner: "../Images/slider-bg-pale.jpg"
+redirect_from:
+  - /tutorials/
+---
+
+
 <script type="text/javascript" async
     src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
 </script>
@@ -9,18 +18,6 @@
         }
     });
 </script>
-
----
-layout: page
-title: "Tutorials"
-banner: "../Images/slider-bg-pale.jpg"
-redirect_from:
-  - /tutorials/
----
-
-<div class="content-new-info">
-<img src="{{ site.baseurl }}/Images/tut-and-screen.png" style= "width:15%; height:auto;" alt="Tutorial and screen">
-
 
 ******
 
