@@ -1,11 +1,70 @@
-<div class="banner" {% if page.banner %}style="background-image: url({{ site.baseurl }}/{{ page.banner }})"{% else %}style="background-image: url({{ site.baseurl }}/Images/slider-bg-pale.jpg)"{% endif %}>
-	{% if page.title %}
-		<h1>{{ page.title }}</h1>
-		{% if page.subtitle %}
-			<h3>{{ page.subtitle }}</h3>
+<<!DOCTYPE html>
+<html lang="{{ site.lang }}">
+	<head>
+    	{% include head.html %}
+	</head>
+	<body>
+		{% include header.html %}
+			{{ content }}
+    	{% include footer.html %}
+
+	{% if jekyll.environment == 'production' %}
+    	{% include analytics.html %}
+    {% endif %}
+	</body>
+</html>
+
+---
+layout: default
+---
+
+{% if page.title %}
+	{% include page-banner.html %}
+{% endif %}
+
+
+<div class="content">
+	<p class="author">
+		{% if page.author %}
+			Created by {{ page.author }}
 		{% endif %}
-	{% endif %}
+		{% if page.updated %}
+			- last updated {{ page.updated | date_to_long_string: "ordinal" }}
+		{% endif %}
+		{% if page.updater %}
+			by {{ page.updater }}
+		{% endif %}
+	</p>
+	<hr/>
+	{{ content }}
+	{% include survey.html %}
 </div>
+
+<header class="header">
+	<div class="navigation-bar">
+		<div id="navigation-container">
+			{% if site.logo %}
+				{% include logo.html %}
+			{% endif %}
+			<nav>
+				<label for="hamburger">&#9776;</label>
+				<input type="checkbox" id="hamburger"/>
+				<ul>
+					{% for item in site.navigation_header %}
+						{% if item.url contains '://' %}
+							{% assign url = item.url %}
+						{% else %}
+							{% assign url = item.url | relative_url %}
+						{% endif %}
+					<li class="item item-nav{% if item.url == page.url %} item-current{% endif %}">
+						<a href="{{ item.url }}">{{ item.title }}</a>
+					</li>
+					{% endfor %}
+				</ul>
+			</nav>
+		</div>
+	</div>
+</header>
 ---
 layout: page
 title: "Tutorials"
