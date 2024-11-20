@@ -1,19 +1,27 @@
----
-layout: tutorial
-title: Investigating The Central Limit Theorem
-date: 2024-11-16 12:00:00
-author: Rachel Brown
-tags: modelling
----
+<script type="text/javascript" async
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+<script type="text/javascript">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']]  // This ensures inline math is rendered
+        }
+    });
+</script>
 
 # Investigating The Central Limit Theorem
 
 In this tutorial, we'll apply the **Central Limit Theorem (CLT)** to sample data from the Palmer Penguins dataset, demonstrating how sampling distributions of the mean approach a normal distribution as sample size increases. This is useful for understanding how ecological data, even when skewed or not normally distributed, can be analyzed with the CLT. We'll focus on penguin flipper lengths and body mass as non-normally distributed variables to illustrate the process.
 
-<p align="center">
-  <img src="https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/Images/penguins.webp" width="1000" height="600">
-</p>
+<center><img src="{{ site.baseurl }}/Images/Long%20penguins%20pic.png" alt="Img" style="width: 100%; height: auto;"></center>
 
+# Turorial Aims:
+
+1. Understand the Central Limit Theorem (CLT) and its importance in ecological data analysis.
+2. Generate and visualize sampling distributions in R.
+3. Apply the CLT to different variables and evaluate its effects on data interpretation.
+  
 # Steps:
 
 1. [**Introduction**](#intro)
@@ -47,7 +55,6 @@ In ecology, data often come from field observations of wildlife populations, whi
 This tutorial will use the Palmer Penguins dataset, which contains data on three penguin species. We’ll focus on measurements like body mass and flipper length to see how sample means approximate a normal distribution, regardless of the underlying population shape.
 
 By the end of this tutorial, you will have a practical understanding of the Central Limit Theorem and how to apply it to data analysis, allowing you to draw meaningful insights from ecological data, even in situations where traditional assumptions do not hold.
-
 
 ## Prerequisites
 {: #Prerequisites}
@@ -89,7 +96,7 @@ The **CLT** states that:
 
 A **normal distribution** is a symmetrical, bell-shaped curve with most observations concentrated near the center.
 
-![alt text](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/Images/Normal%20Curve.png)
+<center><img src="{{ site.baseurl }}/Images/Normal_Curve.png" alt="Img"></center>
 
 ## Central Limit Theorem Formula
 {: #Formula}
@@ -106,7 +113,7 @@ Fortunately, you don’t need to repeatedly sample a population to understand th
    - $n$ = sample size.
 
 This notation may appear a bit daunting if your not familiar with maths but do not worry, keep following along and it will all soon make sense!
-
+   
 ## Sample Size and the Central Limit Theorem
 {: #Size}
 
@@ -174,7 +181,8 @@ head(penguins)
 ```
 Now that the dataset is loaded, you’re ready to dive into the tutorial and explore the Central Limit Theorem in action!
 
-![alt text](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/Images/penguins%20peering.jpeg)
+<left><img src="{{ site.baseurl }}/Images/penguins%20peering.jpeg" alt="Img"></left>
+
 
 ## Explore the Distribution of the Population Data
 {: #PopData}
@@ -203,7 +211,8 @@ We can save the figure and give it exact dimensions using `ggsave` from the `ggp
 ```r
 ggsave("figures/body_mass.png", plot = sparrow_hist, width = 10, height = 5)
 ```
-![alt text](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/figures/body_mass.png)
+
+<center><img src="{{ site.baseurl }}/figures/body_mass.png" alt="Img"></center>
 
 Here we can see, the data appears **skewed** and does not follow the 'bell shaped curve' of the normal distribution.
 
@@ -220,7 +229,7 @@ We now will look at flipper length.
 
 ggsave("figures/flipper_len.png", plot = flipper_len, width = 10, height = 5)
 ```
-![alt text](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/figures/flipper_len.png)
+<center><img src="{{ site.baseurl }}/figures/flipper_len.png" alt="Img"></center>
 
 Again we can see that these measurements do not perfectly follow a normal distribution, so we must turn to the CLT.
 
@@ -279,7 +288,7 @@ After generating the sample means, we can visualize the **sampling distribution*
 
 ggsave("figures/samplemean_plot.png", plot = samplemean_plot, width = 10, height = 5)
 ```
-![alt text](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/figures/samplemean_plot.png)
+<center><img src="{{ site.baseurl }}/figures/samplemean_plot.png" alt="Img"></center>
 
 Here we can see the distribution is looking much more similar to the normal distribution curve.
 
@@ -340,7 +349,7 @@ sample_means_df <- data.frame(
 
 ggsave("figures/sampledist_plot.png", plot = sampledist_plot, width = 10, height = 5)
 ```
-![alt text](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/figures/sampledist_plot.png)
+<center><img src="{{ site.baseurl }}/figures/sampledist_plot.png" alt="Img"></center>
 
 Here we can see, with a smaller sample size (e.g., 10), the distribution of sample means might be more spread out and less normal in shape. As the sample size increases (e.g., 50 or 100), the sample means tend to cluster more tightly around the population mean, and the distribution becomes more bell-shaped and closer to normal, which aligns with the CLT.
 
@@ -395,7 +404,7 @@ normal_curves <- summary_stats %>%
 
 ggsave("figures/curves_plot.png", plot = curves_plot, width = 10, height = 5)
 ```
-![alt text](https://github.com/EdDataScienceEES/tutorial-RachelBrown03/blob/master/figures/curves_plot.png)
+<center><img src="{{ site.baseurl }}/figures/curves_plot.png" alt="Img"></center>
 
 You may be wondering: Why More Bars for Sample Size 10?
  - **Bin Width and Range:** In this code, the `geom_histogram` uses a fixed bin width of `50`. For smaller sample sizes (e.g., 10), the spread (range) of the sample means is generally larger because smaller samples tend to vary more from the population mean. As a result, more bins are needed to cover this wider range, leading to more bars.
