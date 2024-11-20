@@ -16,6 +16,12 @@ In this tutorial, we'll apply the **Central Limit Theorem (CLT)** to sample data
 
 <center><img src="{{ site.baseurl }}/Images/penguins.webp" alt="Img" width="500" height = "300"></center>
 
+# Turorial Aims:
+
+1. Understand the Central Limit Theorem (CLT) and its importance in ecological data analysis.
+2. Generate and visualize sampling distributions in R.
+3. Apply the CLT to different variables and evaluate its effects on data interpretation.
+  
 # Steps:
 
 1. [**Introduction**](#intro)
@@ -49,7 +55,6 @@ In ecology, data often come from field observations of wildlife populations, whi
 This tutorial will use the Palmer Penguins dataset, which contains data on three penguin species. We’ll focus on measurements like body mass and flipper length to see how sample means approximate a normal distribution, regardless of the underlying population shape.
 
 By the end of this tutorial, you will have a practical understanding of the Central Limit Theorem and how to apply it to data analysis, allowing you to draw meaningful insights from ecological data, even in situations where traditional assumptions do not hold.
-
 
 ## Prerequisites
 {: #Prerequisites}
