@@ -1,77 +1,12 @@
-<<!DOCTYPE html>
-<html lang="{{ site.lang }}">
-	<head>
-    	{% include head.html %}
-	</head>
-	<body>
-		{% include header.html %}
-			{{ content }}
-    	{% include footer.html %}
-
-	{% if jekyll.environment == 'production' %}
-    	{% include analytics.html %}
-    {% endif %}
-	</body>
-</html>
-
 ---
-layout: default
+layout: tutorial
+title: Transforming and scaling data
+subtitle: Understand the fundamental concepts of manipulating data distributions for modelling and visualization
+date: 2022-04-04 12:00:00
+author: Matus Seci
+tags: modelling
 ---
 
-{% if page.title %}
-	{% include page-banner.html %}
-{% endif %}
-
-
-<div class="content">
-	<p class="author">
-		{% if page.author %}
-			Created by {{ page.author }}
-		{% endif %}
-		{% if page.updated %}
-			- last updated {{ page.updated | date_to_long_string: "ordinal" }}
-		{% endif %}
-		{% if page.updater %}
-			by {{ page.updater }}
-		{% endif %}
-	</p>
-	<hr/>
-	{{ content }}
-	{% include survey.html %}
-</div>
-
-<header class="header">
-	<div class="navigation-bar">
-		<div id="navigation-container">
-			{% if site.logo %}
-				{% include logo.html %}
-			{% endif %}
-			<nav>
-				<label for="hamburger">&#9776;</label>
-				<input type="checkbox" id="hamburger"/>
-				<ul>
-					{% for item in site.navigation_header %}
-						{% if item.url contains '://' %}
-							{% assign url = item.url %}
-						{% else %}
-							{% assign url = item.url | relative_url %}
-						{% endif %}
-					<li class="item item-nav{% if item.url == page.url %} item-current{% endif %}">
-						<a href="{{ item.url }}">{{ item.title }}</a>
-					</li>
-					{% endfor %}
-				</ul>
-			</nav>
-		</div>
-	</div>
-</header>
----
-layout: page
-title: "Tutorials"
-banner: "{{ site.baseurl }}/Images/slider-bg-pale.jpg"
-redirect_from:
-  - /tutorials/
----
 
 
 <script type="text/javascript" async
