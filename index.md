@@ -1,3 +1,11 @@
+<div class="banner" {% if page.banner %}style="background-image: url({{ site.baseurl }}/{{ page.banner }})"{% else %}style="background-image: url({{ site.baseurl }}/Images/slider-bg-pale.jpg)"{% endif %}>
+	{% if page.title %}
+		<h1>{{ page.title }}</h1>
+		{% if page.subtitle %}
+			<h3>{{ page.subtitle }}</h3>
+		{% endif %}
+	{% endif %}
+</div>
 ---
 layout: page
 title: "Tutorials"
