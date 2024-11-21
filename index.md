@@ -1,18 +1,3 @@
-<script type="text/javascript" async
-    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
-</script>
-
-
-<script type="text/javascript">
-    MathJax.Hub.Config({
-        tex2jax: {
-            inlineMath: [['$', '$'], ['\\(', '\\)']]  // This ensures inline math is rendered
-        }
-    });
-</script>
-
-******
-
 # Investigating The Central Limit Theorem
 
 In this tutorial, we'll apply the **Central Limit Theorem (CLT)** to sample data from the Palmer Penguins dataset, demonstrating how sampling distributions of the mean approach a normal distribution as sample size increases. This is useful for understanding how ecological data, even when skewed or not normally distributed, can be analyzed with the CLT. We'll focus on penguin flipper lengths and body mass as non-normally distributed variables to illustrate the process.
