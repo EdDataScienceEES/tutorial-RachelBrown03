@@ -105,37 +105,30 @@ A **normal distribution** is a symmetrical, bell-shaped curve with most observat
 {: #Formula}
 
 Fortunately, you don’t need to repeatedly sample a population to understand the shape of the sampling distribution. The parameters of the sampling distribution of the mean can be determined directly from the population’s parameters. Therefore, we can describe the sampling distribution of the mean using the following notation:
- 
-   $$\bar{X} \sim N\left(\mu, \dfrac{\sigma}{\sqrt{n}}\right)$$
 
-   Where:
-   - $\bar{X}$ = sampling distribution of the sample mean.
-   - $N$ = normal distribution.
-   - $\mu$ = population mean.
-   - $\sigma$ = population standard deviation.
-   - $n$ = sample size.
+<left><img src="{{ site.baseurl }}/Images/Equations.png" alt="Img"></left>
 
 This notation may appear a bit daunting if your not familiar with maths but do not worry, keep following along and it will all soon make sense!
    
 ## Sample Size and the Central Limit Theorem
 {: #Size}
 
-The **sample size ($n$)** influences the properties of the sampling distribution in two main ways:
+The **sample size (n)** influences the properties of the sampling distribution in two main ways:
 
 ### 1. **Sample Size and Normality**
-- **Small sample sizes ($n < 30$)**: The sampling distribution may not be normal and will resemble the shape of the population distribution.
-- **Large sample sizes ($n \geq 30$)**: The CLT applies, and the sampling distribution will approximate a normal distribution, regardless of the population’s distribution.
+- **Small sample sizes (n < 30)**: The sampling distribution may not be normal and will resemble the shape of the population distribution.
+- **Large sample sizes (n greater than or equal to 30)**: The CLT applies, and the sampling distribution will approximate a normal distribution, regardless of the population’s distribution.
 
 ### 2. **Sample Size and Standard Deviations**
-- **Small $n$**: The standard deviation of the sampling distribution ($\sigma_{\bar{x}}$) is large, indicating greater variability in the sample means. This reflects imprecise estimates of the population mean.
-- **Large $n$**: The standard deviation of the sampling distribution is smaller, indicating less variability and more precise estimates of the population mean.
+- **Small n**: The standard deviation of the sampling distribution is large, indicating greater variability in the sample means. This reflects imprecise estimates of the population mean.
+- **Large n**: The standard deviation of the sampling distribution is smaller, indicating less variability and more precise estimates of the population mean.
 
 
 ## Conditions of the Central Limit Theorem
 {: #Conditions}
 
 For the CLT to hold, the following conditions must be met:
-1. **Sufficiently large sample size**: Typically, $n \geq 30$ is considered sufficient.
+1. **Sufficiently large sample size**: Typically, n greater than or equal to 30 is considered sufficient.
 2. **Independent and identically distributed (i.i.d.) random variables**: This is usually satisfied if the sampling is random.
 3. **Finite variance**: The population’s distribution must have finite variance.
 
