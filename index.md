@@ -11,14 +11,6 @@
 </script>
 
 ******
----
-layout: tutorial
-title: Investigating The Central Limit Theorem
-subtitle: Understand the importance in ecological datasets
-date: 2024-11-21 12:00:00
-author: Rachel Brown
-tags: modelling
----
 
 # Investigating The Central Limit Theorem
 
