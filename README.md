@@ -3,7 +3,8 @@
 ### By Rachel Brown (s2206797@ed.ac.uk)
 
 **This repository contains materials relating to the tutorial produced for the assignment for the course Data Science in Ecology and Environmental Science 2024.**
-The tutorial is available [here](https://eddatascienceees.github.io/tutorial-RachelBrown03/)
+
+The tutorial is available [here](https://eddatascienceees.github.io/tutorial-RachelBrown03/).
 
 # Tutorial Aims
 1. Understand the Central Limit Theorem (CLT) and its importance in ecological data analysis.
