@@ -36,9 +36,9 @@ In this tutorial, we'll apply the **Central Limit Theorem (CLT)** to sample data
 # 1. Introduction
 {: #intro}
 
-The **Central Limit Theorem (CLT)** is fundamental in ecological studies, especially for analyzing population distributions where full population data collection is often impractical. The CLT states that the distribution of sample means approximates a normal distribution as sample size increases, even when the population distribution is not normal.
+The **Central Limit Theorem (CLT)** is fundamental in ecological studies, especially for analysing population distributions where full population data collection is often impractical. The CLT states that the distribution of sample means approximates a normal distribution as sample size increases, even when the population distribution is not normal.
 
-In ecology, data often come from field observations of wildlife populations, which tend to be non-normal. However, many statistical tests assume normality, which raises a key question: **How can we work with data that doesn’t follow a normal distribution?** The CLT is crucial here because it allows us to make inferences using sample means, even if the original data are not normally distributed. By studying the CLT, we can understand the behavior of sample means and use this information in statistical modeling and hypothesis testing in ecology.
+In ecology, data often come from field observations of wildlife populations, which tend to be non-normal. However, many statistical tests assume normality, which raises a key question: **How can we work with data that doesn’t follow a normal distribution?** The CLT is crucial here because it allows us to make inferences using sample means, even if the original data are not normally distributed. By studying the CLT, we can understand the behavior of sample means and use this information in statistical modeling and hypothesis testing.
 
 This tutorial will use the Palmer Penguins dataset, which contains data on three penguin species. We’ll focus on measurements like body mass and flipper length to see how sample means approximate a normal distribution, regardless of the underlying population shape.
 
@@ -60,7 +60,7 @@ Once you’ve reviewed these foundational skills, you’ll be ready to dive into
 ## Data and Materials
 {: #DataMat}
 
-For this tutorial, we’ll be using the `palmerpenguins` dataset in R, which provides ecological data on penguins’ physical characteristics. If you’d like to follow along, install the `palmerpenguins` package and load the data using R. Throughout the tutorial, we’ll explore sampling distributions of penguin flipper lengths to see how the Central Limit Theorem helps us understand and interpret sample-based measurements from a larger population.
+For this tutorial, we’ll be using the `palmerpenguins` dataset in R, which provides ecological data on penguin's physical characteristics. If you’d like to follow along, install the `palmerpenguins` package and load the data using R. Throughout the tutorial, we’ll explore sampling distributions of penguin body mass to see how the Central Limit Theorem helps us understand and interpret sample-based measurements from a larger population.
 
 Let’s dive into the Central Limit Theorem and how it works!
 
@@ -79,7 +79,7 @@ Imagining an experiment may help you to understand sampling distributions:
 The resulting distribution of these sample means is an example of a sampling distribution.
 
 The **CLT** states that:
-- The sampling distribution of the mean will **always** approximate a normal distribution as long as the sample size is large enough, regardless of the population’s distribution (e.g., normal, Poisson, binomial).
+- The sampling distribution of the mean will **always** approximate a normal distribution as long as the sample size is large enough, regardless of the population’s distribution (e.g., Normal, Poisson, Binomial).
 - This applies even when the population distribution is non-normal.
 
 A **normal distribution** is a symmetrical, bell-shaped curve with most observations concentrated near the center.
@@ -123,7 +123,7 @@ For the CLT to hold, the following conditions must be met:
 
 The CLT is fundamental to statistical theory. The term "**central**" in its name highlights the theorem's importance in statistics.
 
-The key takeaway from the CLT is  is that statistical theories that apply to normal distributions can also be applied to many problems that involve non-normal distributions.
+The key takeaway from the CLT is that statistical theories that apply to normal distributions can also be applied to many problems that involve non-normal distributions.
 
 ----
 # 3. Data Preparations
@@ -176,10 +176,10 @@ First we will remove the rows with missing values to make our data easier to wor
 # Remove rows with missing values for simplicity
 penguins_clean <- na.omit(penguins)
 ```
-Now we are ready to plot, we will begin by looking at penguins' body mass, `body_mass_g` in the dataset.
+Now we are ready to plot, we will begin by looking at penguin's body mass, `body_mass_g` in the dataset.
 
 ```r
-# Plot the distributions of body mass and flipper length
+# Plot the distribution of body mass
 (body_mass <- ggplot(penguins_clean, aes(x = body_mass_g)) +
   geom_histogram(binwidth = 200, color = "black", fill = "skyblue") +
   labs(title = "Distribution of Penguin Body Mass", x = "Body Mass (g)") +
@@ -190,18 +190,19 @@ theme_minimal()
 We can save the figure and give it exact dimensions using `ggsave` from the `ggplot2` package. The file will be saved to wherever your working directory is, which you can check by running `getwd()` in the console.
 
 ```r
-ggsave("figures/body_mass.png", plot = sparrow_hist, width = 10, height = 5)
+ggsave("figures/body_mass.png", plot = body_mass, width = 10, height = 5)
 ```
 
 <center><img src="{{ site.baseurl }}/figures/body_mass.png" alt="Img"></center>
 
 Here we can see, the data appears **skewed** and does not follow the 'bell shaped curve' of the normal distribution.
 
-Note that putting your entire ggplot code in brackets () creates the graph and then shows it in the plot viewer. If you don’t have the brackets, you’ve only created the object, but haven’t visualised it. You would then have to call the object such that it will be displayed by just typing body_mass after you’ve created the “body_mass” object.
+Note that putting your entire ggplot code in brackets () creates the graph and then shows it in the plot viewer. If you don’t have the brackets, you’ve only created the object, but haven’t visualised it. You would then have to call the object such that it will be displayed by just typing `body_mass` after you’ve created the “body_mass” object.
 
 We now will look at flipper length.
 
 ```r
+# Plot the distribution of flipper length
 (flipper_len <- ggplot(penguins_clean, aes(x = flipper_length_mm)) +
   geom_histogram(binwidth = 3, color = "black", fill = "salmon") +
   labs(title = "Distribution of Penguin Flipper Length", x = "Flipper Length (mm)") +
@@ -236,7 +237,7 @@ set.seed(123)
 ## Generating Sampling Distributions
 {: #Generating}
 
-Now, let’s simulate sampling distributions of body mass means by drawing random samples from the penguins' data. We’ll create samples of different sizes and calculate the mean of each sample.
+Now, let’s simulate sampling distributions of body mass means by drawing random samples from the penguin's data. We’ll create samples of different sizes and calculate the mean of each sample.
 
 ```r
 # Set parameters for simulation
@@ -395,7 +396,7 @@ You may be wondering: Why More Bars for Sample Size 10?
 # 6. Summary and Interpretation
 {: #Summary}
 
-Congratulations, you've made it to the end of this tutorial! The Central Limit Theorem (CLT) is a valuable tool for ecologists working with real-world data, which is often skewed or irregular. In this tutorial, you’ve seen how the CLT helps approximate normality in sampling distributions, making it easier to apply statistical methods like confidence intervals and hypothesis tests. With this knowledge, you can confidently analyze population metrics, such as penguin body mass, and make reliable inferences even when the data isn’t perfectly shaped.
+Congratulations, you've made it to the end of this tutorial! The Central Limit Theorem (CLT) is a valuable tool for ecologists working with real-world data, which is often skewed or irregular. In this tutorial, you’ve seen how the CLT helps approximate normality in sampling distributions, making it easier to apply statistical methods like confidence intervals and hypothesis tests. With this knowledge, you can confidently analyse population metrics, such as penguin body mass, and make reliable inferences even when the data isn’t perfectly shaped.
 
 ----
 # 7. Challenge
