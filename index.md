@@ -135,8 +135,8 @@ To start off, open `RStudio`,  and create a new script by clicking on `File/ New
 # Purpose of the script
 # Your name, date and email
 
-# Your working directory, set to the folder you just downloaded from Github, e.g.:
-setwd("~/Downloads/CC-intro-to-CLT")
+# Your working directory, set to the folder you want to save to, e.g.:
+setwd("~/Documents/CC-intro-to-CLT")
 
 # Install the package (if not already installed)
 install.packages("palmerpenguins")
@@ -391,6 +391,10 @@ ggsave("figures/curves_plot.png", plot = curves_plot, width = 10, height = 5)
 You may be wondering: Why More Bars for Sample Size 10?
  - **Bin Width and Range:** In this code, the `geom_histogram` uses a fixed bin width of `50`. For smaller sample sizes (e.g., 10), the spread (range) of the sample means is generally larger because smaller samples tend to vary more from the population mean. As a result, more bins are needed to cover this wider range, leading to more bars.
 - **Narrower Range for Larger Samples:** For larger sample sizes (e.g., 100), the sample means cluster more tightly around the population mean, reducing the spread. Fewer bins are needed to cover the narrower range, resulting in fewer bars.
+
+This plot beautifully illustrates the core idea of the **Central Limit Theorem (CLT)**: as the sample size increases, the sampling distribution of the mean becomes narrower and more normal, regardless of the shape of the original population distribution. At a larger sample size, the distribution is tightly concentrated around the mean and appears nearly perfectly normal. This is a clear example of the CLT in action: no matter the underlying shape of the original data, the distribution of sample means approaches normality as the sample size increases.
+
+This demonstrates how the CLT helps us make reliable inferences about population means, even when data is skewed or non-normal. It also shows why larger sample sizes are crucial in statistical analysis - they reduce uncertainty and make the sampling distribution of the mean look increasingly like a normal distribution, improving the accuracy and precision of estimates.
 
 ---
 # 6. Summary and Interpretation
