@@ -36,7 +36,7 @@ In this tutorial, we'll apply the **Central Limit Theorem (CLT)** to sample data
 # 1. Introduction
 {: #intro}
 
-The **Central Limit Theorem (CLT)** is fundamental in ecological studies, especially for analysing population distributions where full population data collection is often impractical. The CLT states that the distribution of sample means approximates a normal distribution as sample size increases, even when the population distribution is not normal.
+The **Central Limit Theorem** is fundamental in ecological studies, especially for analysing population distributions where full population data collection is often impractical. The CLT states that the distribution of sample means approximates a normal distribution as sample size increases, even when the population distribution is not normal.
 
 In ecology, data often come from field observations of wildlife populations, which tend to be non-normal. However, many statistical tests assume normality, which raises a key question: **How can we work with data that doesn’t follow a normal distribution?** The CLT is crucial here because it allows us to make inferences using sample means, even if the original data are not normally distributed. By studying the CLT, we can understand the behavior of sample means and use this information in statistical modeling and hypothesis testing.
 
@@ -255,10 +255,10 @@ In this code, we are:
 - Drawing 1000 samples (`n_samples`), each with 30 observations (`sample_size`).
 - The `replace = TRUE` argument means we allow **sampling with replacement**, so the same observation could appear in multiple samples.
 
-## Visualizing the Sampling Distribution
+## Visualising the Sampling Distribution
 {: #Histogram}
 
-After generating the sample means, we can visualize the **sampling distribution** (i.e., the distribution of the sample means). The Central Limit Theorem tells us that as the sample size increases, the sampling distribution will tend to become more **normal**, even if the original data is not normally distributed.
+After generating the sample means, we can visualise the **sampling distribution** (i.e., the distribution of the sample means). The Central Limit Theorem tells us that as the sample size increases, the sampling distribution will tend to become more **normal**, even if the original data is not normally distributed.
 
 ```r
 # Plot the distribution of sample means
