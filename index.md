@@ -7,7 +7,7 @@ In this tutorial, we'll apply the **Central Limit Theorem (CLT)** to sample data
 # Turorial Aims:
 
 1. Understand the Central Limit Theorem (CLT) and its importance in ecological data analysis.
-2. Generate and visualize sampling distributions in R.
+2. Generate and visualise sampling distributions in R.
 3. Apply the CLT to different variables and evaluate its effects on data interpretation.
   
 # Steps:
