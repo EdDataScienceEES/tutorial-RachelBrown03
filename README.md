@@ -8,7 +8,7 @@ The tutorial is available [here](https://eddatascienceees.github.io/tutorial-Rac
 
 # Tutorial Aims
 1. Understand the Central Limit Theorem (CLT) and its importance in ecological data analysis.
-2. Generate and visualize sampling distributions in R.
+2. Generate and visualise sampling distributions in R.
 3. Apply the CLT to different variables and evaluate its effects on data interpretation.
 
 # Data Licenses
