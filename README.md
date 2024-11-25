@@ -1,5 +1,5 @@
 # Investigating The Central Limit Theorem - materials
-### Learn how the Central Limit Theorem helps analyse and visualize ecological data distributions
+### Learn how the Central Limit Theorem helps analyse and visualise ecological data distributions
 ### By Rachel Brown (s2206797@ed.ac.uk)
 
 **This repository contains materials relating to the tutorial produced for the assignment for the course Data Science in Ecology and Environmental Science 2024.**
