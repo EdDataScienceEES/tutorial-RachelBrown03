@@ -60,6 +60,8 @@ Once you’ve reviewed these foundational skills, you’ll be ready to dive into
 
 For this tutorial, we’ll be using the `palmerpenguins` dataset in R, which provides ecological data on penguin's physical characteristics. If you’d like to follow along, install the `palmerpenguins` package and load the data using R. Throughout the tutorial, we’ll explore sampling distributions of penguin body mass to see how the Central Limit Theorem helps us understand and interpret sample-based measurements from a larger population.
 
+All of the resources for this tutorial can be found on this [GitHub repository](https://github.com/EdDataScienceEES/tutorial-RachelBrown03).
+
 Let’s dive into the Central Limit Theorem and how it works!
 
 ----
