@@ -1,7 +1,7 @@
 # Purpose of the script
 # Your name, date and email
 
-# Your working directory, set to the folder you just downloaded from Github, e.g.:
+# Your working directory, set to the folder you want to save to, e.g.:
 setwd("~/Downloads/CC-intro-to-CLT")
 
 # Install the package (if not already installed)
