@@ -38,7 +38,7 @@ In this tutorial, we'll apply the **Central Limit Theorem (CLT)** to sample data
 
 The **Central Limit Theorem** is fundamental in ecological studies, especially for analysing population distributions where full population data collection is often impractical. The CLT states that the distribution of sample means approximates a normal distribution as sample size increases, even when the population distribution is not normal.
 
-In ecology, data often come from field observations of wildlife populations, which tend to be non-normal. However, many statistical tests assume normality, which raises a key question: **How can we work with data that doesn’t follow a normal distribution?** The CLT is crucial here because it allows us to make inferences using sample means, even if the original data are not normally distributed. By studying the CLT, we can understand the behavior of sample means and use this information in statistical modeling and hypothesis testing.
+In ecology, data often come from field observations of wildlife populations, which tend to be non-normal. However, many statistical tests assume normality, which raises a key question: **How can we work with data that doesn’t follow a normal distribution?** The CLT is crucial here because it allows us to make inferences using sample means, even if the original data are not normally distributed. By studying the CLT, we can understand the behavior of sample means and use this information in statistical modelling and hypothesis testing.
 
 By the end of this tutorial, you will have a practical understanding of the Central Limit Theorem and how to apply it to data analysis, allowing you to draw meaningful insights from ecological data, even in situations where traditional assumptions do not hold.
 
@@ -170,13 +170,13 @@ Now that the dataset is loaded, you’re ready to dive into the tutorial and exp
 
 Let’s begin by examining the distribution of the original penguin body mass and flipper length measurements.
 
-First we will remove the rows with missing values to make our data easier to work with
+First we will remove the rows with missing values to make our data easier to work with.
 
 ```r
 # Remove rows with missing values for simplicity
 penguins_clean <- na.omit(penguins)
 ```
-Now we are ready to plot, we will begin by looking at penguin's body mass, `body_mass_g` in the dataset.
+Now we are ready to plot, we will begin by looking at penguin's body mass, `body_mass_g`, in the dataset.
 
 ```r
 # Plot the distribution of body mass
@@ -388,7 +388,7 @@ ggsave("figures/curves_plot.png", plot = curves_plot, width = 10, height = 5)
 ```
 <center><img src="{{ site.baseurl }}/figures/curves_plot.png" alt="Img"></center>
 
-You may be wondering: Why More Bars for Sample Size 10?
+You may be wondering: **Why More Bars for Sample Size 10?**
  - **Bin Width and Range:** In this code, the `geom_histogram` uses a fixed bin width of `50`. For smaller sample sizes (e.g., 10), the spread (range) of the sample means is generally larger because smaller samples tend to vary more from the population mean. As a result, more bins are needed to cover this wider range, leading to more bars.
 - **Narrower Range for Larger Samples:** For larger sample sizes (e.g., 100), the sample means cluster more tightly around the population mean, reducing the spread. Fewer bins are needed to cover the narrower range, resulting in fewer bars.
 
